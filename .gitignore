@@ -1,0 +1,68 @@
+# General ignores for all environments
+.DS_Store
+Thumbs.db
+*.bak
+*.swp
+*.log
+
+# WinForms (C#)
+bin/
+obj/
+*.user
+*.suo
+*.tmp
+*.ide
+*.rsuser
+*.vs/
+.vscode/
+*.pdb
+*.exe
+*.dll
+*.cache
+*.config
+*.xml
+
+# Electron (JavaScript)
+node_modules/
+dist/
+build/
+.nyc_output/
+coverage/
+*.log
+yarn.lock
+package-lock.json
+.env
+
+# mikroC for PIC
+__Lib/
+__Lib_/
+__Output/
+*.mcl
+*.lst
+*.err
+*.cof
+*.hex
+*.cod
+*.asm
+*.pld
+*.map
+*.dbg
+*.def
+
+# JetBrains IDEs (optional, if used)
+.idea/
+*.iml
+
+# macOS (optional)
+*.DS_Store
+
+# Windows (optional)
+Thumbs.db
+desktop.ini
+
+# Additional common files
+*.tmp
+*.bak
+*.old
+*.orig
+*.rej
