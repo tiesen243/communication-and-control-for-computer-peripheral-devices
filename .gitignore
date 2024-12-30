@@ -26,6 +26,9 @@ obj/
 __Lib/
 __Lib_/
 __Output/
+*.cp
+*.dct
+*.dlt
 *.mcl
 *.lst
 *.err
@@ -37,6 +40,7 @@ __Output/
 *.map
 *.dbg
 *.def
+*.user.dic
 
 # JetBrains IDEs (optional, if used)
 .idea/
@@ -55,3 +59,6 @@ desktop.ini
 *.old
 *.orig
 *.rej
+*_callertable.txt
+*.workspace
+Project Backups/
