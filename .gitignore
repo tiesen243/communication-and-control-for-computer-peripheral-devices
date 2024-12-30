@@ -22,17 +22,6 @@ obj/
 *.config
 *.xml
 
-# Electron (JavaScript)
-node_modules/
-dist/
-build/
-.nyc_output/
-coverage/
-*.log
-yarn.lock
-package-lock.json
-.env
-
 # mikroC for PIC
 __Lib/
 __Lib_/
