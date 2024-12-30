@@ -1,9 +1,9 @@
 int current_mode, i;
 char transmit_data, receive_data;
 
-void mode1();
-void mode2();
-void mode3();
+void mode_1();
+void mode_2();
+void mode_3();
 void delay(int time);
 void turn_off_all_led();
 
@@ -43,40 +43,49 @@ void main()
         { // Check if button 1 is pressed or data received is 1
             while (BUTTON(&PORTB, 0, 10, 0))
                 ;
-            turn_off_all_led();
-            current_mode = 1;
-            transmit_data = '!';
-            UART1_Write(transmit_data);
+            if (current_mode != 1)
+            {
+                turn_off_all_led();
+                current_mode = 1;
+                transmit_data = '!';
+                UART1_Write(transmit_data);
+            }
         }
         else if (BUTTON(&PORTB, 1, 10, 0) || receive_data == '2')
         { // Check if button 2 is pressed or data received is 2
             while (BUTTON(&PORTB, 1, 10, 0))
                 ;
-            turn_off_all_led();
-            current_mode = 2;
-            transmit_data = '@';
-            UART1_Write(transmit_data);
+            if (current_mode != 2)
+            {
+                turn_off_all_led();
+                current_mode = 2;
+                transmit_data = '@';
+                UART1_Write(transmit_data);
+            }
         }
         else if (BUTTON(&PORTB, 2, 10, 0) || receive_data == '3')
         { // Check if button 3 is pressed or data received is 3
             while (BUTTON(&PORTB, 2, 10, 0))
                 ;
-            turn_off_all_led();
-            current_mode = 3;
-            transmit_data = '#';
-            UART1_Write(transmit_data);
+            if (current_mode != 3)
+            {
+                turn_off_all_led();
+                current_mode = 3;
+                transmit_data = '#';
+                UART1_Write(transmit_data);
+            }
         }
 
         switch (current_mode)
         {
         case 1:
-            mode1();
+            mode_1();
             break;
         case 2:
-            mode2();
+            mode_2();
             break;
         case 3:
-            mode3();
+            mode_3();
             break;
         default:
             break;
@@ -84,9 +93,8 @@ void main()
     }
 }
 
-void mode3()
-{
-    // Red 5s -> Yellow 3s -> Green 10s
+void mode_3()
+{ // Red 5s -> Yellow 3s -> Green 10s
     LATE2_bit = 0;
     LATE0_bit = 1;
     delay(5000);
@@ -98,7 +106,7 @@ void mode3()
     delay(10000);
 }
 
-void mode2()
+void mode_2()
 { // Blinking Yellow 1s
     LATE1_bit = 1;
     delay(1000);
@@ -106,20 +114,19 @@ void mode2()
     delay(1000);
 }
 
-void mode1()
+void mode_1()
 { // Always Red
     LATE0_bit = 1;
     delay(1000);
 }
 
-void delay(int time)`
+void delay(int time)
 {
-    if (UART1_Data_Ready())
-        receive_data = UART1_Read();
-
+    receive_data = UART1_Read();
     for (i = 0; i < 0.8 * time; i++)
     { // if data received, break the loop
-        if (BUTTON(&PORTB, 0, 10, 0) || BUTTON(&PORTB, 1, 10, 0) || BUTTON(&PORTB, 2, 10, 0) || receive_data)
+        if (BUTTON(&PORTB, 0, 10, 0) || BUTTON(&PORTB, 1, 10, 0) || BUTTON(&PORTB, 2, 10, 0) ||
+            (UART1_Data_Ready()) && (receive_data == '1' || receive_data == '2' || receive_data == '3'))
             break;
         Delay_ms(1);
     }
