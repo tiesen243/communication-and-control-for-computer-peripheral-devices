@@ -98,7 +98,7 @@ void mode1()
 
 void delay(int time)
 {
-    for (i = 0; i < time - 0.2 * time; i++)
+    for (i = 0; i < 0.8 * time; i++)
     {
         if (BUTTON(&PORTB, 0, 10, 0) || BUTTON(&PORTB, 1, 10, 0) || BUTTON(&PORTB, 2, 10, 0))
             break;
