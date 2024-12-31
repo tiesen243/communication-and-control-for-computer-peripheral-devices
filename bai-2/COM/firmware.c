@@ -19,7 +19,7 @@ void main()
     TRISB1_bit = 1;
     TRISB2_bit = 1;
 
-    // LED  at RE0-RE2 (Do, Vang, Xanh)
+    // LED  at RE0-RE2 (RED, YELLOW, GREEN)
     PORTE = 0x00;
     LATE = 0x00;
     TRISE0_bit = 0;
@@ -76,9 +76,11 @@ void main()
                 UART1_Write(transmit_data);
             }
         }
-        
-        if (receive_data == 'C') can_control = 1;
-        else if (receive_data == 'U') can_control = 0;
+
+        if (receive_data == 'C')
+            can_control = 1;
+        else if (receive_data == 'U')
+            can_control = 0;
 
         switch (current_mode)
         {
