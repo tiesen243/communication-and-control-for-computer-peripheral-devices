@@ -1,11 +1,11 @@
 int current_mode, can_control, i;
 char transmit_data, receive_data;
 
-void mode_1();
-void mode_2();
-void mode_3();
-void delay(int time);
-void turn_off_all_led();
+void mode_1();           // Always Red
+void mode_2();           // Blinking Yellow 1s
+void mode_3();           // Auto mode (Red 5s -> Yellow 3s -> Green 10s)
+void delay(int time);    // Delay function with break condition
+void turn_off_all_led(); // Turn off all LEDs
 
 void main()
 {
@@ -100,7 +100,7 @@ void main()
 }
 
 void mode_3()
-{ // Red 5s -> Yellow 3s -> Green 10s
+{ // Auto mode (Red 5s -> Yellow 3s -> Green 10s)
     LATE2_bit = 0;
     LATE0_bit = 1;
     delay(5000);
