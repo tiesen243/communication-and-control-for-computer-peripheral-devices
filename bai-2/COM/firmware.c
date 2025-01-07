@@ -1,12 +1,12 @@
-int current_mode, allow_control, i;
+int current_mode, is_physics_control, i;
 char transmit_data, receive_data;
 
-void mode_1();
-void mode_2();
-void mode_3();
-void switch_mode(int mode);
-void delay(int time);
 void turn_off_all_led();
+void switch_mode(int mode);
+void handle_button(int button, int mode);
+void update_led_status();
+void send_led_status(char status);
+void delay(int time);
 
 void main()
 {
@@ -32,113 +32,102 @@ void main()
     Delay_ms(100);
 
     current_mode = 3;
-    allow_control = 1;
+    is_physics_control = 1;
     turn_off_all_led();
 
     while (1)
     {
-
         if (UART1_Data_Ready())
+        {
             receive_data = UART1_Read();
-
-        if (receive_data == 'Y')
-        {
-            allow_control = 1;
-            transmit_data = 'E';
-            UART1_Write(transmit_data);
-        }
-        else if (receive_data == 'N')
-        {
-            allow_control = 0;
-            transmit_data = 'D';
-            UART1_Write(transmit_data);
-        }
-
-        if (allow_control)
-        {
-            if (BUTTON(&PORTB, 0, 10, 0))
+            switch (receive_data)
             {
-                while (BUTTON(&PORTB, 0, 10, 0))
-                    ;
+            case 'Z':
+                is_physics_control = 1;
+                transmit_data = 'E';
+                UART1_Write(transmit_data);
+                Delay_ms(100);
+                break;
+            case 'X':
+                is_physics_control = 0;
+                transmit_data = 'D';
+                UART1_Write(transmit_data);
+                Delay_ms(100);
+                break;
+            case '1':
+                if (is_physics_control)
+                    break;
                 if (current_mode != 1)
                     switch_mode(1);
-            }
-            else if (BUTTON(&PORTB, 1, 10, 0))
-            {
-                while (BUTTON(&PORTB, 1, 10, 0))
-                    ;
+                break;
+            case '2':
+                if (is_physics_control)
+                    break;
                 if (current_mode != 2)
                     switch_mode(2);
-            }
-            else if (BUTTON(&PORTB, 2, 10, 0))
-            {
-                while (BUTTON(&PORTB, 2, 10, 0))
-                    ;
+                break;
+            case '3':
+                if (is_physics_control)
+                    break;
                 if (current_mode != 3)
                     switch_mode(3);
-            }
-        }
-        else
-        {
-            if (receive_data == '1')
-            {
-                if (current_mode != 1)
-                    switch_mode(1);
-            }
-            else if (receive_data == '2')
-            {
-                if (current_mode != 2)
-                    switch_mode(2);
-            }
-            else if (receive_data == '3')
-            {
-                if (current_mode != 3)
-                    switch_mode(3);
+                break;
             }
         }
 
-        switch (current_mode)
-        {
-        case 1:
-            mode_1();
-            break;
-        case 2:
-            mode_2();
-            break;
-        case 3:
-            mode_3();
-            break;
-        default:
-            break;
-        }
+        handle_button(0, 1);
+        handle_button(1, 2);
+        handle_button(2, 3);
+
+        update_led_status();
     }
 }
 
-void mode_1()
+void handle_button(int button, int mode)
 {
-    LATE0_bit = 1;
-    delay(1000);
+    if (!is_physics_control)
+        return;
+    if (BUTTON(&PORTB, button, 10, 0))
+    {
+        while (BUTTON(&PORTB, button, 10, 0))
+            ;
+        if (current_mode != mode)
+            switch_mode(mode);
+    }
 }
 
-void mode_2()
+void update_led_status()
 {
-    LATE1_bit = 1;
-    delay(1000);
-    LATE1_bit = 0;
-    delay(1000);
-}
-
-void mode_3()
-{
-    LATE2_bit = 0;
-    LATE0_bit = 1;
-    delay(5000);
-    LATE0_bit = 0;
-    LATE1_bit = 1;
-    delay(3000);
-    LATE1_bit = 0;
-    LATE2_bit = 1;
-    delay(10000);
+    switch (current_mode)
+    {
+    case 1:
+        send_led_status('R');
+        LATE0_bit = 1;
+        delay(1000);
+        break;
+    case 2:
+        send_led_status('Y');
+        LATE1_bit = 1;
+        delay(1000);
+        send_led_status('O');
+        LATE1_bit = 0;
+        delay(1000);
+        break;
+    case 3:
+        send_led_status('R');
+        LATE2_bit = 0;
+        LATE0_bit = 1;
+        delay(5000);
+        send_led_status('Y');
+        LATE0_bit = 0;
+        LATE1_bit = 1;
+        delay(3000);
+        send_led_status('G');
+        LATE1_bit = 0;
+        LATE2_bit = 1;
+        delay(10000);
+        break;
+    }
 }
 
 void switch_mode(int mode)
@@ -163,6 +152,7 @@ void switch_mode(int mode)
         UART1_Write(transmit_data);
         break;
     }
+    delay(100);
 }
 
 void turn_off_all_led()
@@ -170,14 +160,24 @@ void turn_off_all_led()
     LATE0_bit = 0;
     LATE1_bit = 0;
     LATE2_bit = 0;
+    delay(100);
+}
+
+void send_led_status(char status)
+{
+    transmit_data = status;
+    UART1_Write(transmit_data);
+    delay(100);
 }
 
 void delay(int time)
 {
-    for (i = 0; i < 0.8 * time; i++)
+    receive_data = UART1_Read();
+    for (i = 0; i < time; i++)
     {
-        if ((allow_control && (BUTTON(&PORTB, 0, 10, 0) || BUTTON(&PORTB, 1, 10, 0) || BUTTON(&PORTB, 2, 10, 0))) ||
-            (UART1_Data_Ready() && (receive_data == '1' || receive_data == '2' || receive_data == '3')))
+        if ((is_physics_control && (BUTTON(&PORTB, 0, 10, 0) || BUTTON(&PORTB, 1, 10, 0) || BUTTON(&PORTB, 2, 10, 0))) ||
+            (UART1_DATA_Ready() && !is_physics_control && (receive_data == '1' || receive_data == '2' || receive_data == '3')) ||
+            (UART1_Data_Ready() && (receive_data == 'Z' || receive_data == 'X')))
             break;
         Delay_ms(1);
     }

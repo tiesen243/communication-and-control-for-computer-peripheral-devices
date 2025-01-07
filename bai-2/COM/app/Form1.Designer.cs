@@ -46,8 +46,10 @@
             this.button5 = new System.Windows.Forms.Button();
             this.label_title = new System.Windows.Forms.Label();
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
+            this.pictureBox_led = new System.Windows.Forms.PictureBox();
             this.groupBox_connect.SuspendLayout();
             this.groupBox_controller.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_led)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox_connect
@@ -117,6 +119,7 @@
             // 
             // groupBox_controller
             // 
+            this.groupBox_controller.Controls.Add(this.pictureBox_led);
             this.groupBox_controller.Controls.Add(this.label_mode);
             this.groupBox_controller.Controls.Add(this.textBox_mode);
             this.groupBox_controller.Controls.Add(this.button_mode_1);
@@ -216,6 +219,14 @@
             this.serialPort.PortName = "COM2";
             this.serialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort_DataReceived);
             // 
+            // pictureBox_led
+            // 
+            this.pictureBox_led.Location = new System.Drawing.Point(198, 27);
+            this.pictureBox_led.Name = "pictureBox_led";
+            this.pictureBox_led.Size = new System.Drawing.Size(50, 50);
+            this.pictureBox_led.TabIndex = 8;
+            this.pictureBox_led.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -239,6 +250,7 @@
             this.groupBox_connect.PerformLayout();
             this.groupBox_controller.ResumeLayout(false);
             this.groupBox_controller.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_led)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -262,6 +274,7 @@
         private System.Windows.Forms.Label label_mode;
         private System.Windows.Forms.Label label_title;
         private System.IO.Ports.SerialPort serialPort;
+        private System.Windows.Forms.PictureBox pictureBox_led;
     }
 }
 
