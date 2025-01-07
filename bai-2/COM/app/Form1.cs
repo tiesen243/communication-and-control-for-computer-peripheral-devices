@@ -63,6 +63,7 @@ namespace app
             if (serialPort.IsOpen)
             {
                 serialPort.Write("Y");
+                is_physics_control = true;
                 checkBox_control.Checked = false;
                 checkBox_control.Text = "No signal";
                 serialPort.Close();
@@ -171,6 +172,10 @@ namespace app
                         break;
                     case "#":
                         textBox_mode.Text = "3";
+                        break;
+                    default:
+                        checkBox_control.Checked = false;
+                        checkBox_control.Text = "Does not allow physical controls";
                         break;
                 }
             }));

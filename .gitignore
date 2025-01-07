@@ -19,7 +19,6 @@ obj/
 *.exe
 *.dll
 *.cache
-*.config
 *.xml
 
 # mikroC for PIC
