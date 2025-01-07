@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace sw.Properties
+namespace app.Properties
 {
 
 

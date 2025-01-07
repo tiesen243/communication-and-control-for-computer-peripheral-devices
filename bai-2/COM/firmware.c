@@ -41,13 +41,13 @@ void main()
         if (UART1_Data_Ready())
             receive_data = UART1_Read();
 
-        if (receive_data == 'A')
+        if (receive_data == 'Y')
         {
             allow_control = 1;
             transmit_data = 'E';
             UART1_Write(transmit_data);
         }
-        else if (receive_data == 'U')
+        else if (receive_data == 'N')
         {
             allow_control = 0;
             transmit_data = 'D';
@@ -176,8 +176,8 @@ void delay(int time)
 {
     for (i = 0; i < 0.8 * time; i++)
     {
-        if (BUTTON(&PORTB, 0, 10, 0) || BUTTON(&PORTB, 1, 10, 0) || BUTTON(&PORTB, 2, 10, 0) ||
-            (UART1_Data_Ready()) && (receive_data == '1' || receive_data == '2' || receive_data == '3'))
+        if ((allow_control && (BUTTON(&PORTB, 0, 10, 0) || BUTTON(&PORTB, 1, 10, 0) || BUTTON(&PORTB, 2, 10, 0))) ||
+            (UART1_Data_Ready() && (receive_data == '1' || receive_data == '2' || receive_data == '3')))
             break;
         Delay_ms(1);
     }

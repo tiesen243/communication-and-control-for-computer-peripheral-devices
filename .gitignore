@@ -33,9 +33,6 @@ __Output/
 *.lst
 *.err
 *.cof
-*.hex
-*.cod
-*.asm
 *.pld
 *.map
 *.dbg

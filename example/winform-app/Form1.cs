@@ -21,6 +21,7 @@ namespace sw
             if (serialPort1.IsOpen) MessageBox.Show("Please close the connection first", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             else serialPort1.PortName = comboBox_COMP.Text;
         }
+        
         private void button_connect_Click(object sender, EventArgs e)
         {
             if (comboBox_COMP.Text == "") MessageBox.Show("Please select a COM port", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
