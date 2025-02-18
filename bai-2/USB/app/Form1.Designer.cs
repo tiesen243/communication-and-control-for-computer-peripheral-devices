@@ -116,165 +116,49 @@
             this.textBox_status.Location = new System.Drawing.Point(12, 91);
             this.textBox_status.Name = "textBox_status";
             this.textBox_status.ReadOnly = true;
-            // 
-            // groupBox_controller
-            // 
-            this.groupBox_controller.Controls.Add(this.pictureBox_led);
-            this.groupBox_controller.Controls.Add(this.label_mode);
-            this.groupBox_controller.Controls.Add(this.textBox_mode);
-            this.groupBox_controller.Controls.Add(this.button_mode_1);
-            this.groupBox_controller.Controls.Add(this.button_mode_2);
-            this.groupBox_controller.Controls.Add(this.checkBox_control);
-            this.groupBox_controller.Controls.Add(this.button_mode_3);
-            this.groupBox_controller.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox_controller.Location = new System.Drawing.Point(280, 68);
-            this.groupBox_controller.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox_controller.Name = "groupBox_controller";
-            this.groupBox_controller.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox_controller.Size = new System.Drawing.Size(263, 188);
-            this.groupBox_controller.TabIndex = 0;
-            this.groupBox_controller.TabStop = false;
-            this.groupBox_controller.Text = "Controller";
-            // 
-            // label_mode
-            // 
-            this.label_mode.AutoSize = true;
-            this.label_mode.Location = new System.Drawing.Point(7, 91);
-            this.label_mode.Name = "label_mode";
-            this.label_mode.Size = new System.Drawing.Size(106, 20);
-            this.label_mode.TabIndex = 7;
-            this.label_mode.Text = "Current mode";
+            this.textBox_status.Size = new System.Drawing.Size(283, 20);
+            this.textBox_status.TabIndex = 7;
+            this.textBox_status.Text = "Disconnected";
+            this.textBox_status.BackColor = System.Drawing.Color.Red;
             // 
             // textBox_mode
             // 
-            this.textBox_mode.Location = new System.Drawing.Point(142, 88);
+            this.textBox_mode.Location = new System.Drawing.Point(12, 117);
             this.textBox_mode.Name = "textBox_mode";
-            this.textBox_mode.Size = new System.Drawing.Size(50, 26);
-            this.textBox_mode.TabIndex = 2;
-            this.textBox_mode.Text = "3";
-            this.textBox_mode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // button_mode_1
-            // 
-            this.button_mode_1.Location = new System.Drawing.Point(11, 133);
-            this.button_mode_1.Name = "button_mode_1";
-            this.button_mode_1.Size = new System.Drawing.Size(75, 38);
-            this.button_mode_1.TabIndex = 4;
-            this.button_mode_1.Text = "Mode 1";
-            this.button_mode_1.UseVisualStyleBackColor = true;
-            this.button_mode_1.Click += new System.EventHandler(this.button_mode_1_Click);
-            // 
-            // button_mode_2
-            // 
-            this.button_mode_2.Location = new System.Drawing.Point(92, 133);
-            this.button_mode_2.Name = "button_mode_2";
-            this.button_mode_2.Size = new System.Drawing.Size(75, 38);
-            this.button_mode_2.TabIndex = 5;
-            this.button_mode_2.Text = "Mode 2";
-            this.button_mode_2.UseVisualStyleBackColor = true;
-            this.button_mode_2.Click += new System.EventHandler(this.button_mode_2_Click);
-            // 
-            // checkBox_control
-            // 
-            this.checkBox_control.AutoSize = true;
-            this.checkBox_control.Location = new System.Drawing.Point(7, 41);
-            this.checkBox_control.Name = "checkBox_control";
-            this.checkBox_control.Size = new System.Drawing.Size(93, 24);
-            this.checkBox_control.TabIndex = 5;
-            this.checkBox_control.Text = "No signal";
-            this.checkBox_control.UseVisualStyleBackColor = true;
-            this.checkBox_control.CheckedChanged += new System.EventHandler(this.checkBox_control_CheckedChanged);
-            // 
-            // button_mode_3
-            // 
-            this.button_mode_3.Location = new System.Drawing.Point(173, 133);
-            this.button_mode_3.Name = "button_mode_3";
-            this.button_mode_3.Size = new System.Drawing.Size(75, 38);
-            this.button_mode_3.TabIndex = 6;
-            this.button_mode_3.Text = "Mode 3";
-            this.button_mode_3.UseVisualStyleBackColor = true;
-            this.button_mode_3.Click += new System.EventHandler(this.button_mode_3_Click);
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(505, 332);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(8, 8);
-            this.button5.TabIndex = 1;
-            this.button5.Text = "button5";
-            this.button5.UseVisualStyleBackColor = true;
-            // 
-            // label_title
-            // 
-            this.label_title.AutoSize = true;
-            this.label_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_title.Location = new System.Drawing.Point(111, 28);
-            this.label_title.Name = "label_title";
-            this.label_title.Size = new System.Drawing.Size(334, 25);
-            this.label_title.TabIndex = 6;
-            this.label_title.Text = "Communication with Traffic Lights";
-            // 
-            // serialPort
-            // 
-            this.serialPort.PortName = "COM2";
-            this.serialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort_DataReceived);
+            this.textBox_mode.ReadOnly = true;
+            this.textBox_mode.Size = new System.Drawing.Size(283, 20);
+            this.textBox_mode.TabIndex = 8;
+            this.textBox_mode.Text = "Mode";
             // 
             // pictureBox_led
             // 
-            this.pictureBox_led.Location = new System.Drawing.Point(198, 27);
+            this.pictureBox_led.Location = new System.Drawing.Point(12, 143);
             this.pictureBox_led.Name = "pictureBox_led";
-            this.pictureBox_led.Size = new System.Drawing.Size(50, 50);
-            this.pictureBox_led.TabIndex = 8;
+            this.pictureBox_led.Size = new System.Drawing.Size(283, 106);
+            this.pictureBox_led.TabIndex = 9;
             this.pictureBox_led.TabStop = false;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(556, 270);
-            this.Controls.Add(this.label_title);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.groupBox_controller);
-            this.Controls.Add(this.groupBox_connect);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MaximizeBox = false;
+            this.ClientSize = new System.Drawing.Size(307, 261);
+            this.Controls.Add(this.pictureBox_led);
+            this.Controls.Add(this.textBox_mode);
+            this.Controls.Add(this.textBox_status);
+            this.Controls.Add(this.button_mode_3);
+            this.Controls.Add(this.button_mode_2);
+            this.Controls.Add(this.button_mode_1);
+            this.Controls.Add(this.checkBox_control);
+            this.Controls.Add(this.button_disconnect);
+            this.Controls.Add(this.button_connect);
+            this.Controls.Add(this.comboBox_COMP);
             this.Name = "Form1";
-            this.Text = "Communication with Traffic Lights";
-            this.TopMost = true;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Text = "Peripheral Device Control";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.groupBox_connect.ResumeLayout(false);
-            this.groupBox_connect.PerformLayout();
-            this.groupBox_controller.ResumeLayout(false);
-            this.groupBox_controller.PerformLayout();
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_led)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
-
-        #endregion
-
-        private System.Windows.Forms.GroupBox groupBox_connect;
-        private System.Windows.Forms.GroupBox groupBox_controller;
-        private System.Windows.Forms.TextBox textBox_status;
-        private System.Windows.Forms.Label label_serial_port;
-        private System.Windows.Forms.ComboBox comboBox_COMP;
-        private System.Windows.Forms.Button button_disconnect;
-        private System.Windows.Forms.Button button_connect;
-        private System.Windows.Forms.CheckBox checkBox_control;
-        private System.Windows.Forms.Button button_mode_1;
-        private System.Windows.Forms.Button button_mode_2;
-        private System.Windows.Forms.Button button_mode_3;
-        private System.Windows.Forms.TextBox textBox_mode;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Label label_mode;
-        private System.Windows.Forms.Label label_title;
-        private System.IO.Ports.SerialPort serialPort;
-        private System.Windows.Forms.PictureBox pictureBox_led;
     }
 }
 

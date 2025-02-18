@@ -58,11 +58,11 @@ namespace app
             if (serialPort.IsOpen)
             {
                 serialPort.Write("Z");
-                is_physics_control = false;
+                is_physics_control = true;
                 checkBox_control.CheckedChanged -= checkBox_control_CheckedChanged;
                 checkBox_control.Checked = false;
                 checkBox_control.CheckedChanged += new System.EventHandler(this.checkBox_control_CheckedChanged);
-                checkBox_control.Text = "No signal";
+                checkBox_control.Text = "Manual mode";
                 serialPort.Close();
                 MessageBox.Show("Connection Closed", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 textBox_status.Text = "Disconnected";
@@ -77,8 +77,18 @@ namespace app
             {
                 if (serialPort.IsOpen)
                 {
-                    if (checkBox_control.Checked) serialPort.Write("X");
-                    else serialPort.Write("Z");
+                    if (checkBox_control.Checked)
+                    {
+                        serialPort.Write("X");
+                        is_physics_control = false;
+                        checkBox_control.Text = "Auto mode";
+                    }
+                    else
+                    {
+                        serialPort.Write("Z");
+                        is_physics_control = true;
+                        checkBox_control.Text = "Manual mode";
+                    }
                 }
                 else
                 {
