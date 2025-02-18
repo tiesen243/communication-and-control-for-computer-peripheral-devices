@@ -1,9 +1,0 @@
-physic = true -> uncheck -> Manual mode
-
-uncheck -> Z -> E:
-physic = true -> Manual mode
-check   -> X -> D:
-physic = false -> Auto mode
-
-physic = true  -> no software
-physic = false -> software
