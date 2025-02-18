@@ -17,9 +17,27 @@ void send(char msg) {
     HID_Write(&writebuff, out_size);
 }
 
+void turn_off_all_led() {
+    RED = 0;
+    YELLOW = 0;
+    GREEN = 0;
+}
+
 void delay(int time) {
     unsigned int i;
     for (i = 0; i < time; i++) {
+        if (HID_Read() != 0) {
+            if (readbuff[0] == '1') {
+                turn_off_all_led();
+                mode = 1;
+            } else if (readbuff[0] == '2') {
+                turn_off_all_led();
+                mode = 2;
+            } else if (readbuff[0] == '3') {
+                turn_off_all_led();
+                mode = 3;
+            }
+        }
         Delay_ms(1);
     }
 }
@@ -64,11 +82,10 @@ void setup() {
     USBIE_bit = 1;
     PEIE_bit = 1;
     GIE_bit = 1;
-
     
     Delay_ms(100);
-    mode = 3;
     turn_off_all_led();
+    mode = 3;
 }
 
 void loop()
