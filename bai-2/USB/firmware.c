@@ -32,6 +32,17 @@ void delay(int ms) {
             else if (readbuff[0] == '2') { mode = 2; send('U'); turn_off_all_led(); break; }
             else if (readbuff[0] == '3') { mode = 3; send('K'); turn_off_all_led(); break; }
         }
+
+        if (BUTTON(&PORTB, 0, 10, 0)) {
+            while (BUTTON(&PORTB, 0, 10, 0));
+            mode = 1; send('Y'); turn_off_all_led(); break;
+        } else if (BUTTON(&PORTB, 1, 10, 0)) {
+            while (BUTTON(&PORTB, 1, 10, 0));
+            mode = 2; send('U'); turn_off_all_led(); break;
+        } else if (BUTTON(&PORTB, 2, 10, 0)) {
+            while (BUTTON(&PORTB, 2, 10, 0));
+            mode = 3; send('K'); turn_off_all_led(); break;
+        }
         
         Delay_ms(1);
     }
