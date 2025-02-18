@@ -1,17 +1,22 @@
-//------------------------------ DEFINE ------------------------------
+/*------------------------------ DEFINE ------------------------------*/
 #define RED     LATE0_bit
 #define YELLOW  LATE1_bit
 #define GREEN   LATE2_bit
 
 #define in_size 1
 #define out_size 1
-unsigned char readbuff[in_size] absolute 0x500;
+unsigned char readbuff[in_size] absolute 0x500; 
 unsigned char writebuff[out_size] absolute 0x540;
 
-int mode;
-int control_source; // 0 for button, 1 for usb
+int mode; // 1 for always red, 2 for blink yellow, 3 for red -> yellow -> green -> red
+int control_source;
+/*
+    0 for manual, 1 for auto
+    Manual: use button to change mode
+    Auto: use PC to change mode
+*/
 
-// ------------------------------ UTILS ------------------------------
+/*------------------------------ UTILS ------------------------------*/
 
 void send(char msg) {
     writebuff[0] = msg;
@@ -31,8 +36,8 @@ void delay(int time) {
         if (HID_Read() != 0) {
             if (readbuff[0] == 'T') {
                 control_source = 1 - control_source;
-                if (control_source == 0) send('T');
-                else send('F');
+                if (control_source == 0) send('M'); // Manual
+                else send('A'); // Auto
             }
 
             if (control_source == 1) {
@@ -58,7 +63,7 @@ void delay(int time) {
     }
 }
 
-// ------------------------------ PROGRAM ------------------------------
+/*------------------------------ PROGRAM ------------------------------*/
 
 void interrupt(void) {
      if (USBIF_bit == 1) {
