@@ -1,4 +1,5 @@
 //------------------------------ DEFINE ------------------------------
+
 #define RED     LATE0_bit
 #define YELLOW  LATE1_bit
 #define GREEN   LATE2_bit
@@ -23,25 +24,18 @@ void turn_off_all_led() {
     GREEN = 0;
 }
 
-void delay(int time) {
-    unsigned int i;
-    for (i = 0; i < time; i++) {
-        if (HID_Read() != 0) {
-            if (readbuff[0] == '1') {
-                turn_off_all_led();
-                mode = 1;
-            } else if (readbuff[0] == '2') {
-                turn_off_all_led();
-                mode = 2;
-            } else if (readbuff[0] == '3') {
-                turn_off_all_led();
-                mode = 3;
-            }
+void delay(int ms) {
+    int i;
+    for (i = 0; i < ms; i++) {
+        if (HID_Read()) {
+            if (readbuff[0] == '1') { mode = 1; send('Y'); turn_off_all_led(); break;}
+            else if (readbuff[0] == '2') { mode = 2; send('U'); turn_off_all_led(); break; }
+            else if (readbuff[0] == '3') { mode = 3; send('K'); turn_off_all_led(); break; }
         }
+        
         Delay_ms(1);
     }
 }
-
 
 // ------------------------------ PROGRAM ------------------------------
 
@@ -52,25 +46,17 @@ void interrupt(void) {
      }
 }
 
-
-
 void setup() {
     ADCON1 |= 0x0F;
     CMCON |= 7;
 
     // Button at RB0-2 (MODE 1, MODE 2, MODE 3)
-    PORTB = 0x00;
-    LATB = 0x00;
-    TRISB0_bit = 1;
-    TRISB1_bit = 1;
-    TRISB2_bit = 1;
+    PORTB = 0x00; LATB = 0x00;
+    TRISB0_bit = 1; TRISB1_bit = 1; TRISB2_bit = 1;
 
     // LED  at RE0-RE2 (RED, YELLOW, GREEN)
-    PORTE = 0x00;
-    LATE = 0x00;
-    TRISE0_bit = 0;
-    TRISE1_bit = 0;
-    TRISE2_bit = 0;
+    PORTE = 0x00; LATE = 0x00;
+    TRISE0_bit = 0; TRISE1_bit = 0; TRISE2_bit = 0;
 
     // USB config
     UPUEN_bit = 1;
@@ -91,8 +77,7 @@ void setup() {
 void loop()
 {
     if (mode == 1) {
-        RED = 1;
-        delay(1);
+        RED = 1; delay(1);
     } else if (mode == 2) {
         YELLOW = 1; delay(1000);
         YELLOW = 0; delay(1000);
