@@ -1,0 +1,92 @@
+# WinForms (C#)
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio cache/options
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.cache
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Windows Forms specific
+*.resx.cache
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+
+# User-specific files
+*.rsuser
+*.userprefs
+
+# mikroC for PIC
+# Backup
+*.pdsbak
+
+# Debug
+Debug
+
+# Generated files
+*.workspace
+*.log
+*.bmk
+*.brk
+*.cfg
+*.dbg
+*.dct
+*.dlt
+*.hex
+*.lst
+*.dic
+*_callertable.txt
+*.user.dic
+*.asm
+*.c.ini
+*.h.ini
+*.cp
+*.mcl# mikroC for PIC
+
+# Proteus Design Files
+*.workspace
+*.pdsprj.DESKTOP-*.workspace
+*.pdsbak
+*.log
+*.pwi
+*.dbk
+*.zip
+
+# Proteus Backup files
+*_BACKUP_*
+*_BACKUP/
+
+# Proteus output files
+*.pdsprj.workspace
+*.erc
+*.html
+*Last Loaded*
