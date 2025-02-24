@@ -70,7 +70,7 @@ Debug
 *.c.ini
 *.h.ini
 *.cp
-*.mcl# mikroC for PIC
+*.mcl
 
 # Proteus Design Files
 *.workspace
