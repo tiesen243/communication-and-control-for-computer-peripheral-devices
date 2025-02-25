@@ -47,17 +47,20 @@ void delay(int time) {
         if (receive_data == '1') {
           mode = 1;
           turn_off_all_led();
-          send('Y');
+          send('U');
+          Delay_ms(100);
           break;
         } else if (receive_data == '2') {
           mode = 2;
           turn_off_all_led();
-          send('U');
+          send('K');
+          Delay_ms(100);
           break;
         } else if (receive_data == '3') {
           mode = 3;
           turn_off_all_led();
-          send('K');
+          send('I');
+          Delay_ms(100);
           break;
         }
       }
@@ -69,21 +72,24 @@ void delay(int time) {
           ;
         mode = 1;
         turn_off_all_led();
-        send('Y');
+        send('U');
+        Delay_ms(100);
         break;
       } else if (BUTTON(&PORTB, 1, 10, 0)) {
         while (BUTTON(&PORTB, 1, 10, 0))
           ;
         mode = 2;
         turn_off_all_led();
-        send('U');
+        send('K');
+        Delay_ms(100);
         break;
       } else if (BUTTON(&PORTB, 2, 10, 0)) {
         while (BUTTON(&PORTB, 2, 10, 0))
           ;
         mode = 3;
         turn_off_all_led();
-        send('K');
+        send('I');
+        Delay_ms(100);
         break;
       }
     }
@@ -122,13 +128,13 @@ void loop() {
   if (mode == 1) {
     RED = 1;
     send('R');
-    delay(1);
+    delay(10000);
   } else if (mode == 2) {
     YELLOW = 1;
     send('Y');
     delay(1000);
     YELLOW = 0;
-    send('H');
+    send('O');
     delay(1000);
   } else if (mode == 3) {
     if (RED == 1) {

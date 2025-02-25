@@ -37,6 +37,7 @@
             this.comboBox_COMP = new System.Windows.Forms.ComboBox();
             this.button_connect = new System.Windows.Forms.Button();
             this.groupBox_controller = new System.Windows.Forms.GroupBox();
+            this.pictureBox_led = new System.Windows.Forms.PictureBox();
             this.label_mode = new System.Windows.Forms.Label();
             this.textBox_mode = new System.Windows.Forms.TextBox();
             this.button_mode_1 = new System.Windows.Forms.Button();
@@ -46,7 +47,6 @@
             this.button5 = new System.Windows.Forms.Button();
             this.label_title = new System.Windows.Forms.Label();
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
-            this.pictureBox_led = new System.Windows.Forms.PictureBox();
             this.groupBox_connect.SuspendLayout();
             this.groupBox_controller.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_led)).BeginInit();
@@ -136,6 +136,14 @@
             this.groupBox_controller.TabStop = false;
             this.groupBox_controller.Text = "Controller";
             // 
+            // pictureBox_led
+            // 
+            this.pictureBox_led.Location = new System.Drawing.Point(198, 27);
+            this.pictureBox_led.Name = "pictureBox_led";
+            this.pictureBox_led.Size = new System.Drawing.Size(50, 50);
+            this.pictureBox_led.TabIndex = 8;
+            this.pictureBox_led.TabStop = false;
+            // 
             // label_mode
             // 
             this.label_mode.AutoSize = true;
@@ -149,6 +157,7 @@
             // 
             this.textBox_mode.Location = new System.Drawing.Point(142, 88);
             this.textBox_mode.Name = "textBox_mode";
+            this.textBox_mode.ReadOnly = true;
             this.textBox_mode.Size = new System.Drawing.Size(50, 26);
             this.textBox_mode.TabIndex = 2;
             this.textBox_mode.Text = "3";
@@ -218,14 +227,6 @@
             // 
             this.serialPort.PortName = "COM2";
             this.serialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort_DataReceived);
-            // 
-            // pictureBox_led
-            // 
-            this.pictureBox_led.Location = new System.Drawing.Point(198, 27);
-            this.pictureBox_led.Name = "pictureBox_led";
-            this.pictureBox_led.Size = new System.Drawing.Size(50, 50);
-            this.pictureBox_led.TabIndex = 8;
-            this.pictureBox_led.TabStop = false;
             // 
             // Form1
             // 
