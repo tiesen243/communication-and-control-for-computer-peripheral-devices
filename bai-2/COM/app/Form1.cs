@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace app {
 public partial class Form1 : Form {
-  bool control = false;
+  bool control_source = false;
   /*
    * true: auto mode
    * false: manual mode
@@ -43,7 +43,7 @@ public partial class Form1 : Form {
           checkBox_control.CheckedChanged +=
               new System.EventHandler(this.checkBox_control_CheckedChanged);
           checkBox_control.Text = "Manual mode";
-          control = false;
+          control_source = false;
           MessageBox.Show("Connection Opened", Text, MessageBoxButtons.OK,
                           MessageBoxIcon.Information);
           textBox_status.Text = "Connected";
@@ -58,7 +58,7 @@ public partial class Form1 : Form {
 
   private void button_disconnect_Click(object sender, EventArgs e) {
     if (serialPort.IsOpen) {
-      control = false;
+      control_source = false;
       checkBox_control.CheckedChanged -= checkBox_control_CheckedChanged;
       checkBox_control.Checked = false;
       checkBox_control.CheckedChanged +=
@@ -95,7 +95,7 @@ public partial class Form1 : Form {
   private void button_mode_1_Click(object sender, EventArgs e) {
     try {
       if (serialPort.IsOpen) {
-        if (!control) {
+        if (!control_source) {
           MessageBox.Show("Can not control in manual mode", "Warning",
                           MessageBoxButtons.OK, MessageBoxIcon.Warning);
           return;
@@ -115,7 +115,7 @@ public partial class Form1 : Form {
   private void button_mode_2_Click(object sender, EventArgs e) {
     try {
       if (serialPort.IsOpen) {
-        if (!control) {
+        if (!control_source) {
           MessageBox.Show("Can not control in manual mode", "Warning",
                           MessageBoxButtons.OK, MessageBoxIcon.Warning);
           return;
@@ -133,7 +133,7 @@ public partial class Form1 : Form {
   private void button_mode_3_Click(object sender, EventArgs e) {
     try {
       if (serialPort.IsOpen) {
-        if (!control) {
+        if (!control_source) {
           MessageBox.Show("Can not control in manual mode", "Warning",
                           MessageBoxButtons.OK, MessageBoxIcon.Warning);
           return;
@@ -155,11 +155,11 @@ public partial class Form1 : Form {
       if (data == "A") {
         checkBox_control.Checked = true;
         checkBox_control.Text = "Auto mode";
-        control = true;
+        control_source = true;
       } else if (data == "M") {
         checkBox_control.Checked = false;
         checkBox_control.Text = "Manual mode";
-        control = false;
+        control_source = false;
       } else if (data == "U") {
         textBox_mode.Text = "1";
       } else if (data == "K") {

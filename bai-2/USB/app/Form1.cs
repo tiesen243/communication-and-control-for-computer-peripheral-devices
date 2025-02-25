@@ -9,10 +9,11 @@ public partial class Form1 : Form {
   byte[] readbuff = new byte[2];
   byte[] writebuff = new byte[2];
 
-  bool control = false;
+  bool control_source = false;
   /*
-   * true: auto mode
-   * false: manual mode
+   * 0 for manual, 1 for auto
+   * Manual: use button to change mode
+   * Auto: use PC to change mode
    */
 
   public Form1() { InitializeComponent(); }
@@ -50,11 +51,11 @@ public partial class Form1 : Form {
         if (readbuff[1] == 'A') {
           checkBox_control.Checked = true;
           checkBox_control.Text = "Auto mode";
-          control = true;
+          control_source = true;
         } else if (readbuff[1] == 'M') {
           checkBox_control.Checked = false;
           checkBox_control.Text = "Manual mode";
-          control = false;
+          control_source = false;
         } else if (readbuff[1] == 'U') {
           textBox_mode.Text = "1";
         } else if (readbuff[1] == 'K') {
@@ -83,6 +84,8 @@ public partial class Form1 : Form {
   private void usbHidPort_OnSpecifiedDeviceArrived(object sender, EventArgs e) {
     textBox_status.Text = "Connected!";
     textBox_status.BackColor = Color.Green;
+    checkBox_control.Checked = false;
+    checkBox_control.Text = "Manual mode";
     pictureBox_led.Image = app.Properties.Resources.off;
   }
 
@@ -121,7 +124,7 @@ public partial class Form1 : Form {
 
   private void button_mode_1_Click(object sender, EventArgs e) {
     if (usbHidPort.SpecifiedDevice != null) {
-      if (!control) {
+      if (!control_source) {
         MessageBox.Show("Can not control in manual mode", "Warning",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
@@ -135,7 +138,7 @@ public partial class Form1 : Form {
 
   private void button_mode_2_Click(object sender, EventArgs e) {
     if (usbHidPort.SpecifiedDevice != null) {
-      if (!control) {
+      if (!control_source) {
         MessageBox.Show("Can not control in manual mode", "Warning",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
@@ -149,7 +152,7 @@ public partial class Form1 : Form {
 
   private void button_mode_3_Click(object sender, EventArgs e) {
     if (usbHidPort.SpecifiedDevice != null) {
-      if (!control) {
+      if (!control_source) {
         MessageBox.Show("Can not control in manual mode", "Warning",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;

@@ -12,10 +12,10 @@ int mode;
  */
 int control_source;
 /*
-    0 for manual, 1 for auto
-    Manual: use button to change mode
-    Auto: use PC to change mode
-*/
+ * 0 for manual, 1 for auto
+ * Manual: use button to change mode
+ * Auto: use PC to change mode
+ */
 
 void send(char msg) {
   transmit_data = msg;
