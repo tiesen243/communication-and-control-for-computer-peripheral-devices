@@ -9,7 +9,7 @@ public partial class Form1 : Form {
   byte[] readbuff = new byte[2];
   byte[] writebuff = new byte[2];
 
-  bool control = true;
+  bool control = false;
   /*
    * true: auto mode
    * false: manual mode
@@ -45,18 +45,30 @@ public partial class Form1 : Form {
       if (usbHidPort.SpecifiedDevice != null) {
         readbuff = args.data;
 
+        Console.WriteLine(readbuff);
+
         if (readbuff[1] == 'A') {
           checkBox_control.Checked = true;
           checkBox_control.Text = "Auto mode";
+          control = true;
         } else if (readbuff[1] == 'M') {
           checkBox_control.Checked = false;
           checkBox_control.Text = "Manual mode";
-        } else if (readbuff[1] == 'Y') {
-          textBox_mode.Text = "1";
+          control = false;
         } else if (readbuff[1] == 'U') {
-          textBox_mode.Text = "2";
+          textBox_mode.Text = "1";
         } else if (readbuff[1] == 'K') {
+          textBox_mode.Text = "2";
+        } else if (readbuff[1] == 'I') {
           textBox_mode.Text = "3";
+        } else if (readbuff[1] == 'R') {
+          pictureBox_led.Image = app.Properties.Resources.red;
+        } else if (readbuff[1] == 'Y') {
+          pictureBox_led.Image = app.Properties.Resources.yellow;
+        } else if (readbuff[1] == 'G') {
+          pictureBox_led.Image = app.Properties.Resources.green;
+        } else if (readbuff[1] == 'O') {
+          pictureBox_led.Image = app.Properties.Resources.off;
         }
       }
     }
@@ -81,6 +93,8 @@ public partial class Form1 : Form {
     else {
       textBox_status.Text = "Disconnected!";
       textBox_status.BackColor = Color.Red;
+      checkBox_control.Checked = false;
+      checkBox_control.Text = "No signal";
       pictureBox_led.Image = app.Properties.Resources.off;
     }
   }
@@ -107,6 +121,12 @@ public partial class Form1 : Form {
 
   private void button_mode_1_Click(object sender, EventArgs e) {
     if (usbHidPort.SpecifiedDevice != null) {
+      if (!control) {
+        MessageBox.Show("Can not control in manual mode", "Warning",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+      }
+
       writebuff[1] = (byte)'1';
       usbHidPort.SpecifiedDevice.SendData(writebuff);
     } else
@@ -115,6 +135,12 @@ public partial class Form1 : Form {
 
   private void button_mode_2_Click(object sender, EventArgs e) {
     if (usbHidPort.SpecifiedDevice != null) {
+      if (!control) {
+        MessageBox.Show("Can not control in manual mode", "Warning",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+      }
+
       writebuff[1] = (byte)'2';
       usbHidPort.SpecifiedDevice.SendData(writebuff);
     } else
@@ -123,6 +149,12 @@ public partial class Form1 : Form {
 
   private void button_mode_3_Click(object sender, EventArgs e) {
     if (usbHidPort.SpecifiedDevice != null) {
+      if (!control) {
+        MessageBox.Show("Can not control in manual mode", "Warning",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+      }
+
       writebuff[1] = (byte)'3';
       usbHidPort.SpecifiedDevice.SendData(writebuff);
     } else

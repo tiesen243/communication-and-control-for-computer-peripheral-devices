@@ -33,7 +33,6 @@
             this.groupBox_connect = new System.Windows.Forms.GroupBox();
             this.textBox_status = new System.Windows.Forms.TextBox();
             this.groupBox_controller = new System.Windows.Forms.GroupBox();
-            this.pictureBox_led = new System.Windows.Forms.PictureBox();
             this.label_mode = new System.Windows.Forms.Label();
             this.textBox_mode = new System.Windows.Forms.TextBox();
             this.button_mode_1 = new System.Windows.Forms.Button();
@@ -43,6 +42,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.label_title = new System.Windows.Forms.Label();
             this.usbHidPort = new UsbLibrary.UsbHidPort(this.components);
+            this.pictureBox_led = new System.Windows.Forms.PictureBox();
             this.groupBox_connect.SuspendLayout();
             this.groupBox_controller.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_led)).BeginInit();
@@ -90,15 +90,6 @@
             this.groupBox_controller.TabIndex = 0;
             this.groupBox_controller.TabStop = false;
             this.groupBox_controller.Text = "Controller";
-            // 
-            // pictureBox_led
-            // 
-            this.pictureBox_led.Image = global::app.Properties.Resources.green;
-            this.pictureBox_led.Location = new System.Drawing.Point(306, 27);
-            this.pictureBox_led.Name = "pictureBox_led";
-            this.pictureBox_led.Size = new System.Drawing.Size(50, 50);
-            this.pictureBox_led.TabIndex = 8;
-            this.pictureBox_led.TabStop = false;
             // 
             // label_mode
             // 
@@ -188,6 +179,15 @@
             this.usbHidPort.OnDeviceRemoved += new System.EventHandler(this.usbHidPort_OnDeviceRemoved);
             this.usbHidPort.OnDataRecieved += new UsbLibrary.DataRecievedEventHandler(this.usbHidPort_OnDataRecieved);
             this.usbHidPort.OnDataSend += new System.EventHandler(this.usbHidPort_OnDataSend);
+            // 
+            // pictureBox_led
+            // 
+            this.pictureBox_led.Image = global::app.Properties.Resources.yellow;
+            this.pictureBox_led.Location = new System.Drawing.Point(306, 27);
+            this.pictureBox_led.Name = "pictureBox_led";
+            this.pictureBox_led.Size = new System.Drawing.Size(50, 50);
+            this.pictureBox_led.TabIndex = 8;
+            this.pictureBox_led.TabStop = false;
             // 
             // Form1
             // 

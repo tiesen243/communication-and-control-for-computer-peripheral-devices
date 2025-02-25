@@ -121,27 +121,34 @@ void setup() {
 void loop() {
   if (mode == 1) {
     RED = 1;
+    send('R');
     delay(1);
   } else if (mode == 2) {
     YELLOW = 1;
+    send('Y');
     delay(1000);
     YELLOW = 0;
+    send('H');
     delay(1000);
   } else if (mode == 3) {
     if (RED == 1) {
       RED = 0;
       YELLOW = 1;
+      send('Y');
       delay(3000);
     } else if (YELLOW == 1) {
       YELLOW = 0;
       GREEN = 1;
+      send('G');
       delay(10000);
     } else if (GREEN == 1) {
       GREEN = 0;
       RED = 1;
+      send('R');
       delay(5000);
     } else {
       RED = 1;
+      send('R');
       delay(5000);
     }
   }
