@@ -31,16 +31,12 @@ void turn_off_all_led() {
 void delay(int time) {
   unsigned int i;
   for (i = 0; i < time; i++) {
-
     if (UART1_Data_Ready()) {
       receive_data = UART1_Read();
 
       if (receive_data == 'T') {
         control_source = 1 - control_source;
-        if (control_source == 0)
-          send('M'); // Manual
-        else
-          send('A'); // Auto
+        send(control_source == 0 ? 'M' : 'A');
       }
 
       if (control_source == 1) {

@@ -34,14 +34,10 @@ void turn_off_all_led() {
 void delay(int time) {
   unsigned int i;
   for (i = 0; i < time; i++) {
-
     if (HID_Read() != 0) {
       if (readbuff[0] == 'T') {
         control_source = 1 - control_source;
-        if (control_source == 0)
-          send('M'); // Manual
-        else
-          send('A'); // Auto
+        send(control_source == 0 ? 'M' : 'A')
       }
 
       if (control_source == 1) {
