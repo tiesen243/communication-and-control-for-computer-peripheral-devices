@@ -11,7 +11,7 @@ int mode;
 /* Mode of tradic light
  * 1 for always red
  * 2 for blink yellow
- * 3 for red -> yellow -> green -> red
+ * 3 for 5s red -> 3s yellow -> 10s green -> loop
  */
 int control_source;
 /*
