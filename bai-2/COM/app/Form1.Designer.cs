@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace app
+﻿namespace app
 {
     partial class Form1
     {
