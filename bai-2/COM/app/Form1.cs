@@ -157,7 +157,12 @@ namespace app
             if (result == DialogResult.Yes)
             {
                 if (serialPort.IsOpen)
+                {
+                    if (control_source)
+                        send_data("T");
+
                     serialPort.Close();
+                }
 
                 e.Cancel = false;
             }

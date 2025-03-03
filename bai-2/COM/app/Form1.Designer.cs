@@ -1,4 +1,6 @@
-﻿namespace app
+﻿using System.Windows.Forms;
+
+namespace app
 {
     partial class Form1
     {
@@ -27,12 +29,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.successColor = System.Drawing.Color.FromArgb(22, 163, 74);
-            this.destructiveColor = System.Drawing.Color.FromArgb(220, 53, 69);
             this.backgroundColor = System.Drawing.Color.FromArgb(250, 250, 250);
             this.foregroundColor = System.Drawing.Color.FromArgb(10, 10, 10);
             this.primaryColor = System.Drawing.Color.FromArgb(23, 23, 23);
             this.primaryForegroundColor = System.Drawing.Color.FromArgb(250, 250, 250);
+            this.successColor = System.Drawing.Color.FromArgb(22, 163, 74);
+            this.destructiveColor = System.Drawing.Color.FromArgb(220, 53, 69);
 
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources =
@@ -127,9 +129,18 @@
             this.button_connect.Location = new System.Drawing.Point(8, 108);
             this.button_connect.Name = "button_connect";
             this.button_connect.Size = new System.Drawing.Size(109, 40);
-            this.button_disconnect.UseVisualStyleBackColor = true;
+            this.button_disconnect.UseVisualStyleBackColor = false;
             this.button_connect.TabIndex = 3;
             this.button_connect.Text = "Connect";
+            this.button_connect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_connect.FlatAppearance.BorderSize = 0;
+            this.button_connect.BackColor = this.successColor;
+            this.button_connect.ForeColor = this.primaryForegroundColor;
+            this.button_connect.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(
+                21,
+                128,
+                61
+            );
             this.button_connect.Click += new System.EventHandler(this.button_connect_Click);
             //
             // button_disconnect
@@ -139,7 +150,14 @@
             this.button_disconnect.Size = new System.Drawing.Size(109, 40);
             this.button_disconnect.TabIndex = 4;
             this.button_disconnect.Text = "Disconnect";
-            this.button_disconnect.UseVisualStyleBackColor = true;
+            this.button_disconnect.UseVisualStyleBackColor = false;
+            this.button_disconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_disconnect.FlatAppearance.BorderSize = 0;
+            this.button_disconnect.BackColor = this.destructiveColor;
+            this.button_disconnect.ForeColor = this.primaryForegroundColor;
+            this.button_disconnect.FlatAppearance.MouseOverBackColor =
+                System.Drawing.Color.FromArgb(185, 28, 28);
+
             this.button_disconnect.Click += new System.EventHandler(this.button_disconnect_Click);
 
             //
@@ -196,7 +214,16 @@
             this.button_mode_1.Size = new System.Drawing.Size(72, 40);
             this.button_mode_1.TabIndex = 4;
             this.button_mode_1.Text = "Mode 1";
-            this.button_mode_1.UseVisualStyleBackColor = true;
+            this.button_mode_1.UseVisualStyleBackColor = false;
+            this.button_mode_1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_mode_1.FlatAppearance.BorderSize = 0;
+            this.button_mode_1.BackColor = this.primaryColor;
+            this.button_mode_1.ForeColor = this.primaryForegroundColor;
+            this.button_mode_1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(
+                20,
+                20,
+                20
+            );
             this.button_mode_1.Click += new System.EventHandler(this.button_mode_1_Click);
             //
             // button_mode_2
@@ -206,7 +233,16 @@
             this.button_mode_2.Size = new System.Drawing.Size(72, 40);
             this.button_mode_2.TabIndex = 5;
             this.button_mode_2.Text = "Mode 2";
-            this.button_mode_2.UseVisualStyleBackColor = true;
+            this.button_mode_2.UseVisualStyleBackColor = false;
+            this.button_mode_2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_mode_2.FlatAppearance.BorderSize = 0;
+            this.button_mode_2.BackColor = this.primaryColor;
+            this.button_mode_2.ForeColor = this.primaryForegroundColor;
+            this.button_mode_2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(
+                20,
+                20,
+                20
+            );
             this.button_mode_2.Click += new System.EventHandler(this.button_mode_2_Click);
             //
             // checkBox_control
@@ -229,7 +265,16 @@
             this.button_mode_3.Size = new System.Drawing.Size(72, 40);
             this.button_mode_3.TabIndex = 6;
             this.button_mode_3.Text = "Mode 3";
-            this.button_mode_3.UseVisualStyleBackColor = true;
+            this.button_mode_3.UseVisualStyleBackColor = false;
+            this.button_mode_3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_mode_3.FlatAppearance.BorderSize = 0;
+            this.button_mode_3.BackColor = this.primaryColor;
+            this.button_mode_3.ForeColor = this.primaryForegroundColor;
+            this.button_mode_3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(
+                20,
+                20,
+                20
+            );
             this.button_mode_3.Click += new System.EventHandler(this.button_mode_3_Click);
             //
             // serialPort
