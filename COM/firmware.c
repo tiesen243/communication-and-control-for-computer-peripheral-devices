@@ -4,11 +4,13 @@
 
 char transmit_data, receive_data;
 
-int mode;
+int mode, is_night_mode;
 /* Mode of trafic light
  * 1 for always red,
  * 2 for blink yellow,
- * 3 for 5s red -> 3s yellow -> 10s green -> loop
+ * 3 for:
+ * - day mode: 5s red -> 3s yellow -> 10s green -> loop
+ * night mode: blink yellow
  */
 int control_source;
 /*
@@ -37,25 +39,31 @@ void delay(int time) {
       if (receive_data == 'T') {
         control_source = 1 - control_source;
         send(control_source == 0 ? 'M' : 'A');
+      } else if (receive_data == 'D') {
+        turn_off_all_led();
+        is_night_mode = 0;
+      } else if (receive_data == 'N') {
+        turn_off_all_led();
+        is_night_mode = 1;
       }
 
       if (control_source == 1) {
         if (receive_data == '1') {
           mode = 1;
           turn_off_all_led();
-          send('U');
+          send('K');
           Delay_ms(100);
           break;
         } else if (receive_data == '2') {
           mode = 2;
           turn_off_all_led();
-          send('K');
+          send('Z');
           Delay_ms(100);
           break;
         } else if (receive_data == '3') {
           mode = 3;
           turn_off_all_led();
-          send('I');
+          send('E');
           Delay_ms(100);
           break;
         }
@@ -68,7 +76,7 @@ void delay(int time) {
           ;
         mode = 1;
         turn_off_all_led();
-        send('U');
+        send('K');
         Delay_ms(100);
         break;
       } else if (BUTTON(&PORTB, 1, 10, 0)) {
@@ -76,7 +84,7 @@ void delay(int time) {
           ;
         mode = 2;
         turn_off_all_led();
-        send('K');
+        send('Z');
         Delay_ms(100);
         break;
       } else if (BUTTON(&PORTB, 2, 10, 0)) {
@@ -84,7 +92,7 @@ void delay(int time) {
           ;
         mode = 3;
         turn_off_all_led();
-        send('I');
+        send('E');
         Delay_ms(100);
         break;
       }
@@ -118,6 +126,7 @@ void setup() {
 
   turn_off_all_led();
   mode = 3;
+  is_night_mode = 0;
 }
 
 void loop() {
@@ -133,25 +142,34 @@ void loop() {
     send('O');
     delay(1000);
   } else if (mode == 3) {
-    if (RED == 1) {
-      RED = 0;
+    if (is_night_mode) {
       YELLOW = 1;
       send('Y');
-      delay(3000);
-    } else if (YELLOW == 1) {
+      delay(1000);
       YELLOW = 0;
-      GREEN = 1;
-      send('G');
-      delay(10000);
-    } else if (GREEN == 1) {
-      GREEN = 0;
-      RED = 1;
-      send('R');
-      delay(5000);
+      send('O');
+      delay(1000);
     } else {
-      RED = 1;
-      send('R');
-      delay(5000);
+      if (RED == 1) {
+        RED = 0;
+        YELLOW = 1;
+        send('Y');
+        delay(3000);
+      } else if (YELLOW == 1) {
+        YELLOW = 0;
+        GREEN = 1;
+        send('G');
+        delay(10000);
+      } else if (GREEN == 1) {
+        GREEN = 0;
+        RED = 1;
+        send('R');
+        delay(5000);
+      } else {
+        RED = 1;
+        send('R');
+        delay(5000);
+      }
     }
   }
 }

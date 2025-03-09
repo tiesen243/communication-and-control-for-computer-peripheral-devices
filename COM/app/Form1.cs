@@ -7,11 +7,11 @@ namespace app
     public partial class Form1 : Form
     {
         bool control_source = false;
-
         /*
          * true: auto mode
          * false: manual mode
          */
+        bool is_night_mode = false;
 
         public Form1()
         {
@@ -24,12 +24,15 @@ namespace app
 
             string[] ports = SerialPort.GetPortNames();
             comboBox_COMP.Items.AddRange(ports);
+
+            timer.Start();
         }
 
         private void comboBox_COMP_SelectedIndexChanged(object sender, EventArgs e)
         {
             serialPort.PortName = comboBox_COMP.Text;
             button_connect.Enabled = true;
+            button_connect.BackColor = this.successColor;
         }
 
         private void button_connect_Click(object sender, EventArgs e)
@@ -57,12 +60,18 @@ namespace app
 
         private void button_disconnect_Click(object sender, EventArgs e)
         {
-            serialPort.Close();
+            if (serialPort.IsOpen)
+            {
+                send_data("T");
+                System.Threading.Thread.Sleep(100);
+            }
             control_source = false;
             update_checkbox(false);
             checkBox_control.Text = "No signal";
 
             SetInitialControlState(false);
+
+            serialPort.Close();
             ShowConnectionMessage("Connection Closed");
         }
 
@@ -113,17 +122,23 @@ namespace app
                             button_mode_2.Enabled = false;
                             button_mode_3.Enabled = false;
                         }
-                        else if (data == "U")
-                        {
-                            textBox_mode.Text = "1";
-                        }
                         else if (data == "K")
                         {
-                            textBox_mode.Text = "2";
+                            button_mode_1.BackColor = successColor;
+                            button_mode_2.BackColor = primaryColor;
+                            button_mode_3.BackColor = primaryColor;
                         }
-                        else if (data == "I")
+                        else if (data == "Z")
                         {
-                            textBox_mode.Text = "3";
+                            button_mode_1.BackColor = primaryColor;
+                            button_mode_2.BackColor = successColor;
+                            button_mode_3.BackColor = primaryColor;
+                        }
+                        else if (data == "E")
+                        {
+                            button_mode_1.BackColor = primaryColor;
+                            button_mode_2.BackColor = primaryColor;
+                            button_mode_3.BackColor = successColor;
                         }
                         else if (data == "R")
                         {
@@ -146,6 +161,27 @@ namespace app
             );
         }
 
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            DateTime date = DateTime.Now;
+
+            clock.Text = date.ToString();
+
+            if (!serialPort.IsOpen)
+                return;
+
+            if ((date.Hour >= 23 || date.Hour < 5) && !is_night_mode)
+            {
+                send_data("N");
+                is_night_mode = true;
+            }
+            else if ((date.Hour < 23 && date.Hour >= 5) && is_night_mode)
+            {
+                send_data("D");
+                is_night_mode = false;
+            }
+        }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult result = MessageBox.Show(
@@ -159,8 +195,10 @@ namespace app
                 if (serialPort.IsOpen)
                 {
                     if (control_source)
+                    {
                         send_data("T");
-
+                        System.Threading.Thread.Sleep(100);
+                    }
                     serialPort.Close();
                 }
 
@@ -181,7 +219,11 @@ namespace app
         private void SetInitialControlState(bool isConnected = false)
         {
             button_disconnect.Enabled = isConnected;
+            button_disconnect.BackColor = isConnected
+                ? this.destructiveColor
+                : this.destructiveDisabledColor;
             button_connect.Enabled = !isConnected && comboBox_COMP.SelectedItem != null;
+            button_connect.BackColor = !isConnected ? this.successColor : this.successDisabledColor;
             comboBox_COMP.Enabled = !isConnected;
 
             pictureBox_led.Image = app.Properties.Resources.off;
@@ -189,8 +231,17 @@ namespace app
 
             bool modeButtonsEnabled = isConnected && control_source;
             button_mode_1.Enabled = modeButtonsEnabled;
+            button_mode_1.BackColor = modeButtonsEnabled
+                ? this.primaryColor
+                : this.primaryDisabledColor;
             button_mode_2.Enabled = modeButtonsEnabled;
+            button_mode_2.BackColor = modeButtonsEnabled
+                ? this.primaryColor
+                : this.primaryDisabledColor;
             button_mode_3.Enabled = modeButtonsEnabled;
+            button_mode_3.BackColor = modeButtonsEnabled
+                ? this.primaryColor
+                : this.primaryDisabledColor;
 
             UpdateConnectionStatus(isConnected);
         }
