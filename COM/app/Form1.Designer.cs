@@ -37,6 +37,7 @@
             this.button_connect = new System.Windows.Forms.Button();
             this.button_disconnect = new System.Windows.Forms.Button();
             this.groupBox_controller = new System.Windows.Forms.GroupBox();
+            this.clock = new System.Windows.Forms.Label();
             this.pictureBox_led = new System.Windows.Forms.PictureBox();
             this.button_mode_1 = new System.Windows.Forms.Button();
             this.button_mode_2 = new System.Windows.Forms.Button();
@@ -44,8 +45,6 @@
             this.button_mode_3 = new System.Windows.Forms.Button();
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
             this.timer = new System.Windows.Forms.Timer(this.components);
-            this.clock = new System.Windows.Forms.Label();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox_connect.SuspendLayout();
             this.groupBox_controller.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_led)).BeginInit();
@@ -90,7 +89,7 @@
             this.comboBox_COMP.FormattingEnabled = true;
             this.comboBox_COMP.Location = new System.Drawing.Point(108, 28);
             this.comboBox_COMP.Name = "comboBox_COMP";
-            this.comboBox_COMP.Size = new System.Drawing.Size(134, 28);
+            this.comboBox_COMP.Size = new System.Drawing.Size(128, 28);
             this.comboBox_COMP.TabIndex = 0;
             this.comboBox_COMP.SelectedIndexChanged += new System.EventHandler(this.comboBox_COMP_SelectedIndexChanged);
             // 
@@ -109,32 +108,30 @@
             // 
             // button_connect
             // 
-            this.button_connect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
             this.button_connect.FlatAppearance.BorderSize = 0;
-            this.button_connect.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
             this.button_connect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_connect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.button_connect.Location = new System.Drawing.Point(8, 108);
+            this.button_connect.Location = new System.Drawing.Point(12, 108);
             this.button_connect.Name = "button_connect";
             this.button_connect.Size = new System.Drawing.Size(109, 40);
             this.button_connect.TabIndex = 3;
             this.button_connect.Text = "Connect";
             this.button_connect.UseVisualStyleBackColor = false;
+            this.button_connect.BackColor = successColor;
+            this.button_connect.ForeColor = primaryForegroundColor;
             this.button_connect.Click += new System.EventHandler(this.button_connect_Click);
             // 
             // button_disconnect
             // 
-            this.button_disconnect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.button_disconnect.FlatAppearance.BorderSize = 0;
-            this.button_disconnect.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.button_disconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_disconnect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.button_disconnect.Location = new System.Drawing.Point(133, 108);
+            this.button_disconnect.Location = new System.Drawing.Point(127, 108);
             this.button_disconnect.Name = "button_disconnect";
             this.button_disconnect.Size = new System.Drawing.Size(109, 40);
             this.button_disconnect.TabIndex = 4;
             this.button_disconnect.Text = "Disconnect";
             this.button_disconnect.UseVisualStyleBackColor = false;
+            this.button_disconnect.BackColor = destructiveColor;
+            this.button_disconnect.ForeColor = primaryForegroundColor;
             this.button_disconnect.Click += new System.EventHandler(this.button_disconnect_Click);
             // 
             // groupBox_controller
@@ -153,6 +150,15 @@
             this.groupBox_controller.TabStop = false;
             this.groupBox_controller.Text = "Controller";
             // 
+            // clock
+            // 
+            this.clock.AutoSize = true;
+            this.clock.Location = new System.Drawing.Point(12, 72);
+            this.clock.Name = "clock";
+            this.clock.Size = new System.Drawing.Size(45, 20);
+            this.clock.TabIndex = 9;
+            this.clock.Text = "clock";
+            // 
             // pictureBox_led
             // 
             this.pictureBox_led.Location = new System.Drawing.Point(188, 20);
@@ -163,32 +169,30 @@
             // 
             // button_mode_1
             // 
-            this.button_mode_1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(82)))), ((int)(((byte)(82)))), ((int)(((byte)(82)))));
             this.button_mode_1.FlatAppearance.BorderSize = 0;
-            this.button_mode_1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.button_mode_1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_mode_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.button_mode_1.Location = new System.Drawing.Point(16, 110);
             this.button_mode_1.Name = "button_mode_1";
             this.button_mode_1.Size = new System.Drawing.Size(72, 40);
             this.button_mode_1.TabIndex = 4;
             this.button_mode_1.Text = "Mode 1";
             this.button_mode_1.UseVisualStyleBackColor = false;
+            this.button_mode_1.BackColor = primaryColor;
+            this.button_mode_1.ForeColor = primaryForegroundColor;
             this.button_mode_1.Click += new System.EventHandler(this.button_mode_1_Click);
             // 
             // button_mode_2
             // 
-            this.button_mode_2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(82)))), ((int)(((byte)(82)))), ((int)(((byte)(82)))));
             this.button_mode_2.FlatAppearance.BorderSize = 0;
-            this.button_mode_2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.button_mode_2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_mode_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.button_mode_2.Location = new System.Drawing.Point(90, 110);
             this.button_mode_2.Name = "button_mode_2";
             this.button_mode_2.Size = new System.Drawing.Size(72, 40);
             this.button_mode_2.TabIndex = 5;
             this.button_mode_2.Text = "Mode 2";
             this.button_mode_2.UseVisualStyleBackColor = false;
+            this.button_mode_2.BackColor = primaryColor;
+            this.button_mode_2.ForeColor = primaryForegroundColor;
             this.button_mode_2.Click += new System.EventHandler(this.button_mode_2_Click);
             // 
             // checkBox_control
@@ -204,17 +208,16 @@
             // 
             // button_mode_3
             // 
-            this.button_mode_3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(82)))), ((int)(((byte)(82)))), ((int)(((byte)(82)))));
             this.button_mode_3.FlatAppearance.BorderSize = 0;
-            this.button_mode_3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.button_mode_3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_mode_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.button_mode_3.Location = new System.Drawing.Point(164, 110);
             this.button_mode_3.Name = "button_mode_3";
             this.button_mode_3.Size = new System.Drawing.Size(72, 40);
             this.button_mode_3.TabIndex = 6;
             this.button_mode_3.Text = "Mode 3";
             this.button_mode_3.UseVisualStyleBackColor = false;
+            this.button_mode_3.BackColor = primaryColor;
+            this.button_mode_3.ForeColor = primaryForegroundColor;
             this.button_mode_3.Click += new System.EventHandler(this.button_mode_3_Click);
             // 
             // serialPort
@@ -225,15 +228,6 @@
             // timer
             // 
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
-            // 
-            // clock
-            // 
-            this.clock.AutoSize = true;
-            this.clock.Location = new System.Drawing.Point(12, 72);
-            this.clock.Name = "clock";
-            this.clock.Size = new System.Drawing.Size(45, 20);
-            this.clock.TabIndex = 9;
-            this.clock.Text = "clock";
             // 
             // Form1
             // 
@@ -266,15 +260,41 @@
 
         #endregion
 
-        private System.Drawing.Color backgroundColor;
-        private System.Drawing.Color foregroundColor;
-        private System.Drawing.Color primaryColor;
-        private System.Drawing.Color primaryDisabledColor;
-        private System.Drawing.Color primaryForegroundColor;
-        private System.Drawing.Color successColor;
-        private System.Drawing.Color successDisabledColor;
-        private System.Drawing.Color destructiveColor;
-        private System.Drawing.Color destructiveDisabledColor;
+        private System.Drawing.Color backgroundColor = System.Drawing.Color.FromArgb(
+            ((int)(((byte)(250)))),
+            ((int)(((byte)(250)))),
+            ((int)(((byte)(250))))
+        );
+        private System.Drawing.Color foregroundColor = System.Drawing.Color.FromArgb(
+            ((int)(((byte)(10)))),
+            ((int)(((byte)(10)))),
+            ((int)(((byte)(10))))
+        );
+        private System.Drawing.Color primaryColor = System.Drawing.Color.FromArgb(
+            ((int)(((byte)(29)))),
+            ((int)(((byte)(78)))),
+            ((int)(((byte)(216))))
+        );
+        private System.Drawing.Color primaryForegroundColor = System.Drawing.Color.FromArgb(
+            ((int)(((byte)(248)))),
+            ((int)(((byte)(250)))),
+            ((int)(((byte)(252))))
+        );
+        private System.Drawing.Color activeColor = System.Drawing.Color.FromArgb(
+            ((int)(((byte)(30)))),
+            ((int)(((byte)(64)))),
+            ((int)(((byte)(175))))
+        );
+        private System.Drawing.Color successColor = System.Drawing.Color.FromArgb(
+            ((int)(((byte)(22)))),
+            ((int)(((byte)(163)))),
+            ((int)(((byte)(74))))
+        );
+        private System.Drawing.Color destructiveColor = System.Drawing.Color.FromArgb(
+            ((int)(((byte)(220)))),
+            ((int)(((byte)(38)))),
+            ((int)(((byte)(38))))
+        );
 
         private System.Windows.Forms.GroupBox groupBox_connect;
         private System.Windows.Forms.GroupBox groupBox_controller;
@@ -292,6 +312,5 @@
         private System.Windows.Forms.PictureBox pictureBox_led;
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.Label clock;
-        private System.Windows.Forms.Timer timer1;
     }
 }

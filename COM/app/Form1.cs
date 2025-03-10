@@ -7,6 +7,7 @@ namespace app
     public partial class Form1 : Form
     {
         bool control_source = false;
+
         /*
          * true: auto mode
          * false: manual mode
@@ -43,6 +44,7 @@ namespace app
                 control_source = false;
                 update_checkbox(false);
                 checkBox_control.Text = "Manual mode";
+                button_mode_3.BackColor = activeColor;
 
                 SetInitialControlState(true);
                 ShowConnectionMessage("Connection Opened");
@@ -60,14 +62,12 @@ namespace app
 
         private void button_disconnect_Click(object sender, EventArgs e)
         {
-            if (serialPort.IsOpen)
-            {
-                send_data("T");
-                System.Threading.Thread.Sleep(100);
-            }
             control_source = false;
             update_checkbox(false);
             checkBox_control.Text = "No signal";
+            button_mode_1.BackColor = primaryColor;
+            button_mode_2.BackColor = primaryColor;
+            button_mode_3.BackColor = primaryColor;
 
             SetInitialControlState(false);
 
@@ -124,21 +124,21 @@ namespace app
                         }
                         else if (data == "K")
                         {
-                            button_mode_1.BackColor = successColor;
+                            button_mode_1.BackColor = activeColor;
                             button_mode_2.BackColor = primaryColor;
                             button_mode_3.BackColor = primaryColor;
                         }
                         else if (data == "Z")
                         {
                             button_mode_1.BackColor = primaryColor;
-                            button_mode_2.BackColor = successColor;
+                            button_mode_2.BackColor = activeColor;
                             button_mode_3.BackColor = primaryColor;
                         }
                         else if (data == "E")
                         {
                             button_mode_1.BackColor = primaryColor;
                             button_mode_2.BackColor = primaryColor;
-                            button_mode_3.BackColor = successColor;
+                            button_mode_3.BackColor = activeColor;
                         }
                         else if (data == "R")
                         {
@@ -193,14 +193,7 @@ namespace app
             if (result == DialogResult.Yes)
             {
                 if (serialPort.IsOpen)
-                {
-                    if (control_source)
-                    {
-                        send_data("T");
-                        System.Threading.Thread.Sleep(100);
-                    }
                     serialPort.Close();
-                }
 
                 e.Cancel = false;
             }
@@ -219,11 +212,7 @@ namespace app
         private void SetInitialControlState(bool isConnected = false)
         {
             button_disconnect.Enabled = isConnected;
-            button_disconnect.BackColor = isConnected
-                ? this.destructiveColor
-                : this.destructiveDisabledColor;
             button_connect.Enabled = !isConnected && comboBox_COMP.SelectedItem != null;
-            button_connect.BackColor = !isConnected ? this.successColor : this.successDisabledColor;
             comboBox_COMP.Enabled = !isConnected;
 
             pictureBox_led.Image = app.Properties.Resources.off;
@@ -231,17 +220,8 @@ namespace app
 
             bool modeButtonsEnabled = isConnected && control_source;
             button_mode_1.Enabled = modeButtonsEnabled;
-            button_mode_1.BackColor = modeButtonsEnabled
-                ? this.primaryColor
-                : this.primaryDisabledColor;
             button_mode_2.Enabled = modeButtonsEnabled;
-            button_mode_2.BackColor = modeButtonsEnabled
-                ? this.primaryColor
-                : this.primaryDisabledColor;
             button_mode_3.Enabled = modeButtonsEnabled;
-            button_mode_3.BackColor = modeButtonsEnabled
-                ? this.primaryColor
-                : this.primaryDisabledColor;
 
             UpdateConnectionStatus(isConnected);
         }
