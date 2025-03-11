@@ -126,6 +126,7 @@ void setup() {
 
   turn_off_all_led();
   mode = 3;
+  control_source = 0;
   is_night_mode = 0;
 }
 
