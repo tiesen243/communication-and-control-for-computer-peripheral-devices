@@ -54,6 +54,7 @@ Count=2
 [LIB_EXPANDED_NODES]
 0=mikroE Libraries
 1=System Libraries
+896=UART
 Count=3
 [PROGRAMMER_TYPE]
 Value=mikroE mikroProg

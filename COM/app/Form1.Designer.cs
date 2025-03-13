@@ -104,8 +104,6 @@
             //
             // textBox_status
             //
-            this.textBox_status.BackColor = backgroundColor;
-            this.textBox_status.ForeColor = destructiveColor;
             this.textBox_status.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox_status.Location = new System.Drawing.Point(55, 72);
             this.textBox_status.Name = "textBox_status";
@@ -117,6 +115,7 @@
             //
             // button_connect
             //
+            this.button_connect.Enabled = false;
             this.button_connect.FlatAppearance.BorderSize = 0;
             this.button_connect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_connect.Location = new System.Drawing.Point(12, 108);
@@ -125,12 +124,11 @@
             this.button_connect.TabIndex = 3;
             this.button_connect.Text = "Connect";
             this.button_connect.UseVisualStyleBackColor = false;
-            this.button_connect.BackColor = successColor;
-            this.button_connect.ForeColor = primaryForegroundColor;
             this.button_connect.Click += new System.EventHandler(this.button_connect_Click);
             //
             // button_disconnect
             //
+            this.button_disconnect.Enabled = false;
             this.button_disconnect.FlatAppearance.BorderSize = 0;
             this.button_disconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_disconnect.Location = new System.Drawing.Point(127, 108);
@@ -139,8 +137,6 @@
             this.button_disconnect.TabIndex = 4;
             this.button_disconnect.Text = "Disconnect";
             this.button_disconnect.UseVisualStyleBackColor = false;
-            this.button_disconnect.BackColor = destructiveColor;
-            this.button_disconnect.ForeColor = primaryForegroundColor;
             this.button_disconnect.Click += new System.EventHandler(this.button_disconnect_Click);
             //
             // groupBox_controller
@@ -178,6 +174,7 @@
             //
             // button_mode_1
             //
+            this.button_mode_1.Enabled = false;
             this.button_mode_1.FlatAppearance.BorderSize = 0;
             this.button_mode_1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_mode_1.Location = new System.Drawing.Point(16, 110);
@@ -186,12 +183,11 @@
             this.button_mode_1.TabIndex = 4;
             this.button_mode_1.Text = "Mode 1";
             this.button_mode_1.UseVisualStyleBackColor = false;
-            this.button_mode_1.BackColor = primaryColor;
-            this.button_mode_1.ForeColor = primaryForegroundColor;
             this.button_mode_1.Click += new System.EventHandler(this.button_mode_1_Click);
             //
             // button_mode_2
             //
+            this.button_mode_2.Enabled = false;
             this.button_mode_2.FlatAppearance.BorderSize = 0;
             this.button_mode_2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_mode_2.Location = new System.Drawing.Point(90, 110);
@@ -200,13 +196,12 @@
             this.button_mode_2.TabIndex = 5;
             this.button_mode_2.Text = "Mode 2";
             this.button_mode_2.UseVisualStyleBackColor = false;
-            this.button_mode_2.BackColor = primaryColor;
-            this.button_mode_2.ForeColor = primaryForegroundColor;
             this.button_mode_2.Click += new System.EventHandler(this.button_mode_2_Click);
             //
             // checkBox_control
             //
             this.checkBox_control.AutoSize = true;
+            this.checkBox_control.Enabled = false;
             this.checkBox_control.Location = new System.Drawing.Point(16, 32);
             this.checkBox_control.Name = "checkBox_control";
             this.checkBox_control.Size = new System.Drawing.Size(93, 24);
@@ -219,6 +214,7 @@
             //
             // button_mode_3
             //
+            this.button_mode_3.Enabled = false;
             this.button_mode_3.FlatAppearance.BorderSize = 0;
             this.button_mode_3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_mode_3.Location = new System.Drawing.Point(164, 110);
@@ -227,8 +223,6 @@
             this.button_mode_3.TabIndex = 6;
             this.button_mode_3.Text = "Mode 3";
             this.button_mode_3.UseVisualStyleBackColor = false;
-            this.button_mode_3.BackColor = primaryColor;
-            this.button_mode_3.ForeColor = primaryForegroundColor;
             this.button_mode_3.Click += new System.EventHandler(this.button_mode_3_Click);
             //
             // serialPort
@@ -246,8 +240,6 @@
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = backgroundColor;
-            this.ForeColor = foregroundColor;
             this.ClientSize = new System.Drawing.Size(550, 236);
             this.Controls.Add(this.label_title);
             this.Controls.Add(this.groupBox_controller);
