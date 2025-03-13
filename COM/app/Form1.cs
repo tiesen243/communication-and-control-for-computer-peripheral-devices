@@ -6,9 +6,9 @@ namespace app
 {
     public partial class Form1 : Form
     {
-        bool control_source = false;
-        bool is_night_mode = false;
+        #region Constants and Fields
 
+        // Communication constants
         private static readonly char[] RECEIVE_MSG =
         {
             'K',
@@ -23,9 +23,19 @@ namespace app
         };
         private static readonly char[] SEND_MSG = { '1', '2', '3', 'T', 'D', 'N', 'I' };
 
+        // State tracking
+        private bool controlSource = false;
+        private bool isNightMode = false;
+
+        #endregion
+
+
+        #region Initialization
+
         public Form1()
         {
             InitializeComponent();
+
             this.textBox_status.ForeColor = this.destructiveColor;
             this.textBox_status.BackColor = this.backgroundColor;
 
@@ -37,10 +47,13 @@ namespace app
 
             this.button_mode_1.BackColor = this.primaryColor;
             this.button_mode_1.ForeColor = this.primaryForegroundColor;
+
             this.button_mode_2.BackColor = this.primaryColor;
             this.button_mode_2.ForeColor = this.primaryForegroundColor;
+
             this.button_mode_3.BackColor = this.primaryColor;
             this.button_mode_3.ForeColor = this.primaryForegroundColor;
+
             this.pictureBox_led.Image = app.Properties.Resources.off;
         }
 
@@ -52,6 +65,11 @@ namespace app
             timer.Start();
         }
 
+        #endregion
+
+
+        #region Form Events
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult result = MessageBox.Show(
@@ -60,11 +78,11 @@ namespace app
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
+
             if (result == DialogResult.Yes)
             {
                 if (serialPort.IsOpen)
                     serialPort.Close();
-
                 e.Cancel = false;
             }
             else
@@ -73,7 +91,10 @@ namespace app
             }
         }
 
-        /* ------------------------- START: Connect / Disconnect  Handlers ------------------------- */
+        #endregion
+
+
+        #region Connection Management
 
         private void comboBox_COMP_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -86,14 +107,8 @@ namespace app
             try
             {
                 serialPort.Open();
-                textBox_status.Text = "Connected";
-                textBox_status.ForeColor = this.successColor;
-                button_connect.Enabled = false;
-                button_disconnect.Enabled = true;
+                UpdateConnectionStatus(true);
                 send_data(SEND_MSG[6].ToString());
-
-                checkBox_control.Enabled = true;
-
                 ShowConnectionMessage("Connection Opened");
             }
             catch (Exception)
@@ -107,19 +122,7 @@ namespace app
             try
             {
                 serialPort.Close();
-                textBox_status.Text = "Disconnected";
-                textBox_status.ForeColor = this.destructiveColor;
-                button_connect.Enabled = true;
-                button_disconnect.Enabled = false;
-
-                update_checkbox(false);
-                checkBox_control.Enabled = false;
-                checkBox_control.Text = "No Signal";
-
-                button_mode_1.Enabled = false;
-                button_mode_2.Enabled = false;
-                button_mode_3.Enabled = false;
-
+                UpdateConnectionStatus(false);
                 ShowConnectionMessage("Connection Closed");
             }
             catch (Exception)
@@ -128,19 +131,10 @@ namespace app
             }
         }
 
-        private void ShowConnectionMessage(string message, bool isError = false)
-        {
-            MessageBox.Show(
-                message,
-                isError ? "Error" : Text,
-                MessageBoxButtons.OK,
-                isError ? MessageBoxIcon.Error : MessageBoxIcon.Information
-            );
-        }
+        #endregion
 
-        /* ------------------------- END: Connect / Disconnect  Handlers ------------------------- */
 
-        /* ------------------------- START: Control Handlers ------------------------- */
+        #region Control Functions
 
         private void checkBox_control_CheckedChanged(object sender, EventArgs e)
         {
@@ -171,21 +165,25 @@ namespace app
             if (!serialPort.IsOpen)
                 return;
 
-            if ((date.Hour >= 23 || date.Hour < 5) && !is_night_mode)
+            bool shouldBeNightMode = date.Hour >= 23 || date.Hour < 5;
+
+            if (shouldBeNightMode && !isNightMode)
             {
                 send_data(SEND_MSG[5].ToString());
-                is_night_mode = true;
+                isNightMode = true;
             }
-            else if ((date.Hour < 23 && date.Hour >= 5) && is_night_mode)
+            else if (!shouldBeNightMode && isNightMode)
             {
                 send_data(SEND_MSG[4].ToString());
-                is_night_mode = false;
+                isNightMode = false;
             }
         }
 
-        /* ------------------------- END: Control Handlers ------------------------- */
+        #endregion
 
-        /* ------------------------- Data Received Handler ------------------------- */
+
+        #region Communication
+
         private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             string data = serialPort.ReadExisting();
@@ -195,64 +193,105 @@ namespace app
                     {
                         if (data == RECEIVE_MSG[8].ToString())
                         {
-                            update_checkbox(true);
-                            control_source = true;
-
-                            button_mode_1.Enabled = true;
-                            button_mode_2.Enabled = true;
-                            button_mode_3.Enabled = true;
+                            this.updateControl(true);
                         }
                         else if (data == RECEIVE_MSG[7].ToString())
                         {
-                            update_checkbox(false);
-                            control_source = false;
-
-                            button_mode_1.Enabled = false;
-                            button_mode_2.Enabled = false;
-                            button_mode_3.Enabled = false;
+                            this.updateControl(false);
                         }
                         else if (data == RECEIVE_MSG[0].ToString())
                         {
-                            button_mode_1.BackColor = activeColor;
-                            button_mode_2.BackColor = primaryColor;
-                            button_mode_3.BackColor = primaryColor;
+                            this.updateButton(1);
                         }
                         else if (data == RECEIVE_MSG[1].ToString())
                         {
-                            button_mode_1.BackColor = primaryColor;
-                            button_mode_2.BackColor = activeColor;
-                            button_mode_3.BackColor = primaryColor;
+                            this.updateButton(2);
                         }
                         else if (data == RECEIVE_MSG[2].ToString())
                         {
-                            button_mode_1.BackColor = primaryColor;
-                            button_mode_2.BackColor = primaryColor;
-                            button_mode_3.BackColor = activeColor;
+                            this.updateButton(3);
                         }
-                        else if (data == RECEIVE_MSG[3].ToString())
+                        else
                         {
-                            pictureBox_led.Image = app.Properties.Resources.red;
-                        }
-                        else if (data == RECEIVE_MSG[6].ToString())
-                        {
-                            pictureBox_led.Image = app.Properties.Resources.yellow;
-                        }
-                        else if (data == RECEIVE_MSG[4].ToString())
-                        {
-                            pictureBox_led.Image = app.Properties.Resources.green;
-                        }
-                        else if (data == RECEIVE_MSG[5].ToString())
-                        {
-                            pictureBox_led.Image = app.Properties.Resources.off;
+                            this.UpdateLedStatus(data);
                         }
                     }
                 )
             );
         }
 
-        /* ------------------------- START: Helper Functions ------------------------- */
+        private void updateControl(bool value)
+        {
+            updateCheckbox(value);
+            controlSource = value;
 
-        private void update_checkbox(bool value)
+            button_mode_1.Enabled = value;
+            button_mode_2.Enabled = value;
+            button_mode_3.Enabled = value;
+        }
+
+        private void updateButton(int index)
+        {
+            button_mode_1.BackColor = index == 1 ? activeColor : primaryColor;
+            button_mode_2.BackColor = index == 2 ? activeColor : primaryColor;
+            button_mode_3.BackColor = index == 3 ? activeColor : primaryColor;
+        }
+
+        private void UpdateLedStatus(string data)
+        {
+            if (data == RECEIVE_MSG[3].ToString())
+                pictureBox_led.Image = Properties.Resources.red;
+            else if (data == RECEIVE_MSG[6].ToString())
+                pictureBox_led.Image = Properties.Resources.yellow;
+            else if (data == RECEIVE_MSG[4].ToString())
+                pictureBox_led.Image = Properties.Resources.green;
+            else if (data == RECEIVE_MSG[5].ToString())
+                pictureBox_led.Image = Properties.Resources.off;
+        }
+
+        #endregion
+
+
+        #region Helper Methods
+
+        private void UpdateConnectionStatus(bool connected)
+        {
+            if (connected)
+            {
+                textBox_status.Text = "Connected";
+                textBox_status.ForeColor = successColor;
+                button_connect.Enabled = false;
+                button_disconnect.Enabled = true;
+                checkBox_control.Enabled = true;
+            }
+            else
+            {
+                textBox_status.Text = "Disconnected";
+                textBox_status.ForeColor = destructiveColor;
+                button_connect.Enabled = true;
+                button_disconnect.Enabled = false;
+
+                updateCheckbox(false);
+                checkBox_control.Enabled = false;
+                checkBox_control.Text = "No Signal";
+
+                button_mode_1.Enabled = false;
+                button_mode_2.Enabled = false;
+                button_mode_3.Enabled = false;
+            }
+        }
+
+        private void ShowConnectionMessage(string message, bool isError = false)
+        {
+            MessageBox.Show(
+                message,
+                isError ? "Error" : Text,
+                MessageBoxButtons.OK,
+                isError ? MessageBoxIcon.Error : MessageBoxIcon.Information
+            );
+        }
+
+        private void updateCheckbox(bool value)
         {
             checkBox_control.CheckedChanged -= checkBox_control_CheckedChanged;
             checkBox_control.Checked = value;
@@ -279,6 +318,6 @@ namespace app
             }
         }
 
-        /* ------------------------- END: Helper Functions ------------------------- */
+        #endregion
     }
 }
