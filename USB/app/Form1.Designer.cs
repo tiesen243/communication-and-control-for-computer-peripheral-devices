@@ -31,11 +31,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.label_title = new System.Windows.Forms.Label();
             this.groupBox_connect = new System.Windows.Forms.GroupBox();
-            this.label_serial_port = new System.Windows.Forms.Label();
-            this.comboBox_COMP = new System.Windows.Forms.ComboBox();
+            this.button_submitTime = new System.Windows.Forms.Button();
+            this.label_greenTime = new System.Windows.Forms.Label();
+            this.label_yellowTime = new System.Windows.Forms.Label();
+            this.label_redTime = new System.Windows.Forms.Label();
+            this.textBox_greenTime = new System.Windows.Forms.TextBox();
+            this.textBox_yellowTime = new System.Windows.Forms.TextBox();
+            this.textBox_redTime = new System.Windows.Forms.TextBox();
             this.textBox_status = new System.Windows.Forms.TextBox();
-            this.button_connect = new System.Windows.Forms.Button();
-            this.button_disconnect = new System.Windows.Forms.Button();
             this.groupBox_controller = new System.Windows.Forms.GroupBox();
             this.clock = new System.Windows.Forms.Label();
             this.pictureBox_led = new System.Windows.Forms.PictureBox();
@@ -62,11 +65,14 @@
             // 
             // groupBox_connect
             // 
-            this.groupBox_connect.Controls.Add(this.label_serial_port);
-            this.groupBox_connect.Controls.Add(this.comboBox_COMP);
+            this.groupBox_connect.Controls.Add(this.button_submitTime);
+            this.groupBox_connect.Controls.Add(this.label_greenTime);
+            this.groupBox_connect.Controls.Add(this.label_yellowTime);
+            this.groupBox_connect.Controls.Add(this.label_redTime);
+            this.groupBox_connect.Controls.Add(this.textBox_greenTime);
+            this.groupBox_connect.Controls.Add(this.textBox_yellowTime);
+            this.groupBox_connect.Controls.Add(this.textBox_redTime);
             this.groupBox_connect.Controls.Add(this.textBox_status);
-            this.groupBox_connect.Controls.Add(this.button_connect);
-            this.groupBox_connect.Controls.Add(this.button_disconnect);
             this.groupBox_connect.Location = new System.Drawing.Point(16, 56);
             this.groupBox_connect.Name = "groupBox_connect";
             this.groupBox_connect.Padding = new System.Windows.Forms.Padding(8);
@@ -75,60 +81,89 @@
             this.groupBox_connect.TabStop = false;
             this.groupBox_connect.Text = "Connection";
             // 
-            // label_serial_port
+            // button_submitTime
             // 
-            this.label_serial_port.Location = new System.Drawing.Point(8, 32);
-            this.label_serial_port.Name = "label_serial_port";
-            this.label_serial_port.Size = new System.Drawing.Size(84, 20);
-            this.label_serial_port.TabIndex = 1;
-            this.label_serial_port.Text = "Serial port";
+            this.button_submitTime.Enabled = false;
+            this.button_submitTime.FlatAppearance.BorderSize = 0;
+            this.button_submitTime.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_submitTime.Location = new System.Drawing.Point(151, 95);
+            this.button_submitTime.Name = "button_submitTime";
+            this.button_submitTime.Size = new System.Drawing.Size(88, 58);
+            this.button_submitTime.TabIndex = 11;
+            this.button_submitTime.Text = "Save Changes";
+            this.button_submitTime.UseVisualStyleBackColor = true;
+            this.button_submitTime.Click += new System.EventHandler(this.button_submitTime_Click);
             // 
-            // comboBox_COMP
+            // label_greenTime
             // 
-            this.comboBox_COMP.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox_COMP.FormattingEnabled = true;
-            this.comboBox_COMP.Location = new System.Drawing.Point(108, 28);
-            this.comboBox_COMP.Name = "comboBox_COMP";
-            this.comboBox_COMP.Size = new System.Drawing.Size(128, 28);
-            this.comboBox_COMP.TabIndex = 0;
-            this.comboBox_COMP.SelectedIndexChanged += new System.EventHandler(this.comboBox_COMP_SelectedIndexChanged);
+            this.label_greenTime.AutoSize = true;
+            this.label_greenTime.Location = new System.Drawing.Point(11, 133);
+            this.label_greenTime.Name = "label_greenTime";
+            this.label_greenTime.Size = new System.Drawing.Size(54, 20);
+            this.label_greenTime.TabIndex = 10;
+            this.label_greenTime.Text = "Green";
+            // 
+            // label_yellowTime
+            // 
+            this.label_yellowTime.AutoSize = true;
+            this.label_yellowTime.Location = new System.Drawing.Point(11, 101);
+            this.label_yellowTime.Name = "label_yellowTime";
+            this.label_yellowTime.Size = new System.Drawing.Size(55, 20);
+            this.label_yellowTime.TabIndex = 10;
+            this.label_yellowTime.Text = "Yellow";
+            // 
+            // label_redTime
+            // 
+            this.label_redTime.AutoSize = true;
+            this.label_redTime.Location = new System.Drawing.Point(11, 69);
+            this.label_redTime.Name = "label_redTime";
+            this.label_redTime.Size = new System.Drawing.Size(39, 20);
+            this.label_redTime.TabIndex = 10;
+            this.label_redTime.Text = "Red";
+            // 
+            // textBox_greenTime
+            // 
+            this.textBox_greenTime.Location = new System.Drawing.Point(89, 127);
+            this.textBox_greenTime.Name = "textBox_greenTime";
+            this.textBox_greenTime.Size = new System.Drawing.Size(40, 26);
+            this.textBox_greenTime.TabIndex = 3;
+            this.textBox_greenTime.Text = "10";
+            this.textBox_greenTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_greenTime.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.validateTextBox);
+            this.textBox_greenTime.Leave += new System.EventHandler(this.formatTextBox);
+            // 
+            // textBox_yellowTime
+            // 
+            this.textBox_yellowTime.Location = new System.Drawing.Point(89, 95);
+            this.textBox_yellowTime.Name = "textBox_yellowTime";
+            this.textBox_yellowTime.Size = new System.Drawing.Size(40, 26);
+            this.textBox_yellowTime.TabIndex = 2;
+            this.textBox_yellowTime.Text = "03";
+            this.textBox_yellowTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_yellowTime.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.validateTextBox);
+            this.textBox_yellowTime.Leave += new System.EventHandler(this.formatTextBox);
+            // 
+            // textBox_redTime
+            // 
+            this.textBox_redTime.Location = new System.Drawing.Point(89, 63);
+            this.textBox_redTime.Name = "textBox_redTime";
+            this.textBox_redTime.Size = new System.Drawing.Size(40, 26);
+            this.textBox_redTime.TabIndex = 1;
+            this.textBox_redTime.Text = "05";
+            this.textBox_redTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_redTime.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.validateTextBox);
+            this.textBox_redTime.Leave += new System.EventHandler(this.formatTextBox);
             // 
             // textBox_status
             // 
             this.textBox_status.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox_status.Location = new System.Drawing.Point(55, 72);
+            this.textBox_status.Location = new System.Drawing.Point(55, 37);
             this.textBox_status.Name = "textBox_status";
             this.textBox_status.ReadOnly = true;
             this.textBox_status.Size = new System.Drawing.Size(140, 19);
-            this.textBox_status.TabIndex = 2;
+            this.textBox_status.TabIndex = 0;
             this.textBox_status.Text = "Disconnected";
             this.textBox_status.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // button_connect
-            // 
-            this.button_connect.Enabled = false;
-            this.button_connect.FlatAppearance.BorderSize = 0;
-            this.button_connect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_connect.Location = new System.Drawing.Point(12, 108);
-            this.button_connect.Name = "button_connect";
-            this.button_connect.Size = new System.Drawing.Size(109, 40);
-            this.button_connect.TabIndex = 3;
-            this.button_connect.Text = "Connect";
-            this.button_connect.UseVisualStyleBackColor = false;
-            this.button_connect.Click += new System.EventHandler(this.button_connect_Click);
-            // 
-            // button_disconnect
-            // 
-            this.button_disconnect.Enabled = false;
-            this.button_disconnect.FlatAppearance.BorderSize = 0;
-            this.button_disconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_disconnect.Location = new System.Drawing.Point(127, 108);
-            this.button_disconnect.Name = "button_disconnect";
-            this.button_disconnect.Size = new System.Drawing.Size(109, 40);
-            this.button_disconnect.TabIndex = 4;
-            this.button_disconnect.Text = "Disconnect";
-            this.button_disconnect.UseVisualStyleBackColor = false;
-            this.button_disconnect.Click += new System.EventHandler(this.button_disconnect_Click);
             // 
             // groupBox_controller
             // 
@@ -222,6 +257,11 @@
             // 
             this.usbHidPort.ProductId = 0;
             this.usbHidPort.VendorId = 0;
+            this.usbHidPort.OnSpecifiedDeviceArrived += new System.EventHandler(this.usbHidPort_OnSpecifiedDeviceArrived);
+            this.usbHidPort.OnSpecifiedDeviceRemoved += new System.EventHandler(this.usbHidPort_OnSpecifiedDeviceRemoved);
+            this.usbHidPort.OnDeviceArrived += new System.EventHandler(this.usbHidPort_OnDeviceArrived);
+            this.usbHidPort.OnDeviceRemoved += new System.EventHandler(this.usbHidPort_OnDeviceRemoved);
+            this.usbHidPort.OnDataRecieved += new UsbLibrary.DataRecievedEventHandler(this.usbHidPort_OnDataRecieved);
             // 
             // Form1
             // 
@@ -291,10 +331,6 @@
         private System.Windows.Forms.GroupBox groupBox_connect;
         private System.Windows.Forms.GroupBox groupBox_controller;
         private System.Windows.Forms.TextBox textBox_status;
-        private System.Windows.Forms.Label label_serial_port;
-        private System.Windows.Forms.ComboBox comboBox_COMP;
-        private System.Windows.Forms.Button button_disconnect;
-        private System.Windows.Forms.Button button_connect;
         private System.Windows.Forms.CheckBox checkBox_control;
         private System.Windows.Forms.Button button_mode_1;
         private System.Windows.Forms.Button button_mode_2;
@@ -304,5 +340,12 @@
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.Label clock;
         private UsbLibrary.UsbHidPort usbHidPort;
+        private System.Windows.Forms.TextBox textBox_greenTime;
+        private System.Windows.Forms.TextBox textBox_yellowTime;
+        private System.Windows.Forms.TextBox textBox_redTime;
+        private System.Windows.Forms.Label label_redTime;
+        private System.Windows.Forms.Label label_greenTime;
+        private System.Windows.Forms.Label label_yellowTime;
+        private System.Windows.Forms.Button button_submitTime;
     }
 }

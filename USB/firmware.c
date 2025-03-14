@@ -171,7 +171,6 @@ void ovr_delay(int time) {
       send_data(SEND_MSG[mode - 1]);
       Delay_ms(100);
       send_data(SEND_MSG[control_source + 7]);
-      Delay_ms(100);
     } else if (res == RECEIVE_MSG[7]) {
       int isSet = set_time();
       if (mode == 3 && isSet) {

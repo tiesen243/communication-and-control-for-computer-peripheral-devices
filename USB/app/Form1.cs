@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO.Ports;
 using System.Windows.Forms;
+using UsbLibrary;
 
 namespace app
 {
@@ -21,11 +21,14 @@ namespace app
             'M',
             'A',
         };
-        private static readonly char[] SEND_MSG = { '1', '2', '3', 'T', 'D', 'N', 'I' };
+        private static readonly char[] SEND_MSG = { '1', '2', '3', 'T', 'D', 'N', 'I', 'S' };
 
         // State tracking
         private bool controlSource = false;
         private bool isNightMode = false;
+
+        byte[] readbuff = new byte[8];
+        byte[] writebuff = new byte[8];
 
         #endregion
 
@@ -36,14 +39,14 @@ namespace app
         {
             InitializeComponent();
 
+            this.BackColor = this.backgroundColor;
+            this.ForeColor = this.foregroundColor;
+
             this.textBox_status.ForeColor = this.destructiveColor;
             this.textBox_status.BackColor = this.backgroundColor;
 
-            this.button_connect.BackColor = this.successColor;
-            this.button_connect.ForeColor = this.primaryForegroundColor;
-
-            this.button_disconnect.BackColor = this.destructiveColor;
-            this.button_disconnect.ForeColor = this.primaryForegroundColor;
+            this.button_submitTime.BackColor = this.primaryColor;
+            this.button_submitTime.ForeColor = this.primaryForegroundColor;
 
             this.button_mode_1.BackColor = this.primaryColor;
             this.button_mode_1.ForeColor = this.primaryForegroundColor;
@@ -59,8 +62,9 @@ namespace app
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            string[] ports = SerialPort.GetPortNames();
-            comboBox_COMP.Items.AddRange(ports);
+            usbHidPort.VendorId = 0x04D8;
+            usbHidPort.ProductId = 0x0001;
+            usbHidPort.CheckDevicePresent();
 
             timer.Start();
         }
@@ -80,15 +84,9 @@ namespace app
             );
 
             if (result == DialogResult.Yes)
-            {
-                if (serialPort.IsOpen)
-                    serialPort.Close();
                 e.Cancel = false;
-            }
             else
-            {
                 e.Cancel = true;
-            }
         }
 
         #endregion
@@ -96,40 +94,29 @@ namespace app
 
         #region Connection Management
 
-        private void comboBox_COMP_SelectedIndexChanged(object sender, EventArgs e)
+        private void usbHidPort_OnSpecifiedDeviceArrived(object sender, EventArgs e)
         {
-            serialPort.PortName = comboBox_COMP.Text;
-            button_connect.Enabled = true;
+            UpdateConnectionStatus(true);
+            send_data(SEND_MSG[6].ToString());
+            textBox_redTime.Text = "05";
+            textBox_yellowTime.Text = "03";
+            textBox_greenTime.Text = "10";
         }
 
-        private void button_connect_Click(object sender, EventArgs e)
+        private void usbHidPort_OnSpecifiedDeviceRemoved(object sender, EventArgs e)
         {
-            try
-            {
-                serialPort.Open();
-                UpdateConnectionStatus(true);
-                send_data(SEND_MSG[6].ToString());
-                ShowConnectionMessage("Connection Opened");
-            }
-            catch (Exception)
-            {
-                ShowConnectionMessage("Error opening connection", true);
-            }
-        }
-
-        private void button_disconnect_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                serialPort.Close();
+            if (InvokeRequired)
+                Invoke(
+                    new EventHandler(usbHidPort_OnSpecifiedDeviceRemoved),
+                    new object[] { sender, e }
+                );
+            else
                 UpdateConnectionStatus(false);
-                ShowConnectionMessage("Connection Closed");
-            }
-            catch (Exception)
-            {
-                ShowConnectionMessage("Error closing connection", true);
-            }
         }
+
+        private void usbHidPort_OnDeviceArrived(object sender, EventArgs e) { }
+
+        private void usbHidPort_OnDeviceRemoved(object sender, EventArgs e) { }
 
         #endregion
 
@@ -156,14 +143,73 @@ namespace app
             send_data(SEND_MSG[2].ToString());
         }
 
+        private void button_submitTime_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (usbHidPort.SpecifiedDevice == null)
+                    return;
+
+                if (
+                    !TryParseTimeInput(textBox_redTime.Text, out byte redDigit1, out byte redDigit2)
+                    || !TryParseTimeInput(
+                        textBox_yellowTime.Text,
+                        out byte yellowDigit1,
+                        out byte yellowDigit2
+                    )
+                    || !TryParseTimeInput(
+                        textBox_greenTime.Text,
+                        out byte greenDigit1,
+                        out byte greenDigit2
+                    )
+                )
+                {
+                    MessageBox.Show(
+                        "Invalid time format. Please enter two-digit numbers.",
+                        "Input Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    return;
+                }
+
+                writebuff = new byte[]
+                {
+                    0,
+                    writebuff[0],
+                    redDigit1,
+                    redDigit2,
+                    yellowDigit1,
+                    yellowDigit2,
+                    greenDigit1,
+                    greenDigit2,
+                };
+
+                usbHidPort.SpecifiedDevice.SendData(writebuff);
+
+                MessageBox.Show(
+                    "Time settings submitted successfully",
+                    "Success",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(
+                    "Error sending data",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+        }
+
         private void timer_Tick(object sender, EventArgs e)
         {
             DateTime date = DateTime.Now;
 
             clock.Text = date.ToString();
-
-            if (!serialPort.IsOpen)
-                return;
 
             bool shouldBeNightMode = date.Hour >= 23 || date.Hour < 5;
 
@@ -184,50 +230,50 @@ namespace app
 
         #region Communication
 
-        private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void usbHidPort_OnDataRecieved(object sender, DataRecievedEventArgs args)
         {
-            string data = serialPort.ReadExisting();
-            this.Invoke(
-                new EventHandler(
-                    delegate
-                    {
-                        if (data == RECEIVE_MSG[8].ToString())
-                        {
-                            this.updateControl(true);
-                        }
-                        else if (data == RECEIVE_MSG[7].ToString())
-                        {
-                            this.updateControl(false);
-                        }
-                        else if (data == RECEIVE_MSG[0].ToString())
-                        {
-                            this.updateButton(1);
-                        }
-                        else if (data == RECEIVE_MSG[1].ToString())
-                        {
-                            this.updateButton(2);
-                        }
-                        else if (data == RECEIVE_MSG[2].ToString())
-                        {
-                            this.updateButton(3);
-                        }
-                        else
-                        {
-                            this.UpdateLedStatus(data);
-                        }
-                    }
-                )
-            );
+            byte data = args.data[1];
+            if (data == RECEIVE_MSG[8])
+            {
+                this.updateControl(true);
+            }
+            else if (data == RECEIVE_MSG[7])
+            {
+                this.updateControl(false);
+            }
+            else if (data == RECEIVE_MSG[0])
+            {
+                this.updateButton(1);
+            }
+            else if (data == RECEIVE_MSG[1])
+            {
+                this.updateButton(2);
+            }
+            else if (data == RECEIVE_MSG[2])
+            {
+                this.updateButton(3);
+            }
+            else
+            {
+                this.UpdateLedStatus(data);
+            }
         }
 
         private void updateControl(bool value)
         {
-            updateCheckbox(value);
-            controlSource = value;
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action<bool>(updateControl), value);
+            }
+            else
+            {
+                updateCheckbox(value);
+                controlSource = value;
 
-            button_mode_1.Enabled = value;
-            button_mode_2.Enabled = value;
-            button_mode_3.Enabled = value;
+                button_mode_1.Enabled = value;
+                button_mode_2.Enabled = value;
+                button_mode_3.Enabled = value;
+            }
         }
 
         private void updateButton(int index)
@@ -237,15 +283,15 @@ namespace app
             button_mode_3.BackColor = index == 3 ? activeColor : primaryColor;
         }
 
-        private void UpdateLedStatus(string data)
+        private void UpdateLedStatus(byte data)
         {
-            if (data == RECEIVE_MSG[3].ToString())
+            if (data == RECEIVE_MSG[3])
                 pictureBox_led.Image = Properties.Resources.red;
-            else if (data == RECEIVE_MSG[6].ToString())
+            else if (data == RECEIVE_MSG[6])
                 pictureBox_led.Image = Properties.Resources.yellow;
-            else if (data == RECEIVE_MSG[4].ToString())
+            else if (data == RECEIVE_MSG[4])
                 pictureBox_led.Image = Properties.Resources.green;
-            else if (data == RECEIVE_MSG[5].ToString())
+            else if (data == RECEIVE_MSG[5])
                 pictureBox_led.Image = Properties.Resources.off;
         }
 
@@ -260,20 +306,18 @@ namespace app
             {
                 textBox_status.Text = "Connected";
                 textBox_status.ForeColor = successColor;
-                button_connect.Enabled = false;
-                button_disconnect.Enabled = true;
                 checkBox_control.Enabled = true;
+                button_submitTime.Enabled = true;
             }
             else
             {
                 textBox_status.Text = "Disconnected";
                 textBox_status.ForeColor = destructiveColor;
-                button_connect.Enabled = true;
-                button_disconnect.Enabled = false;
 
                 updateCheckbox(false);
                 checkBox_control.Enabled = false;
                 checkBox_control.Text = "No Signal";
+                button_submitTime.Enabled = false;
 
                 button_mode_1.Enabled = false;
                 button_mode_2.Enabled = false;
@@ -293,19 +337,110 @@ namespace app
 
         private void updateCheckbox(bool value)
         {
-            checkBox_control.CheckedChanged -= checkBox_control_CheckedChanged;
-            checkBox_control.Checked = value;
-            checkBox_control.Text = value ? "Auto Control" : "Manual Control";
-            checkBox_control.CheckedChanged += new System.EventHandler(
-                checkBox_control_CheckedChanged
-            );
+            if (checkBox_control.InvokeRequired)
+            {
+                checkBox_control.Invoke(new Action<bool>(updateCheckbox), value);
+            }
+            else
+            {
+                checkBox_control.CheckedChanged -= checkBox_control_CheckedChanged;
+                checkBox_control.Checked = value;
+                checkBox_control.Text = value ? "Auto Control" : "Manual Control";
+                checkBox_control.CheckedChanged += new System.EventHandler(
+                    checkBox_control_CheckedChanged
+                );
+            }
+        }
+
+        private void validateTextBox(object sender, KeyPressEventArgs e)
+        {
+            // Allow only digits, backspace, and delete
+            if (
+                !char.IsDigit(e.KeyChar)
+                && e.KeyChar != (char)Keys.Back
+                && e.KeyChar != (char)Keys.Delete
+            )
+            {
+                e.Handled = true;
+                return;
+            }
+
+            // If the input is a digit, check if it would make the value exceed 99
+            if (char.IsDigit(e.KeyChar))
+            {
+                TextBox textBox = (TextBox)sender;
+                string potentialValue = textBox.Text;
+
+                // If the cursor is not at the end, insert the character at the right position
+                if (textBox.SelectionLength > 0)
+                {
+                    potentialValue = potentialValue.Remove(
+                        textBox.SelectionStart,
+                        textBox.SelectionLength
+                    );
+                }
+                potentialValue = potentialValue.Insert(
+                    textBox.SelectionStart,
+                    e.KeyChar.ToString()
+                );
+
+                // Try to parse the potential value
+                if (int.TryParse(potentialValue, out int value))
+                {
+                    // Reject if the value is out of range (1-99)
+                    if (value < 1 || value > 99)
+                    {
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
+
+        private void formatTextBox(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (string.IsNullOrWhiteSpace(textBox.Text))
+                return;
+
+            if (int.TryParse(textBox.Text, out int value))
+            {
+                // Ensure value is between 1 and 99
+                value = Math.Max(1, Math.Min(99, value));
+
+                // Format with leading zero if less than 10
+                if (value < 10)
+                    textBox.Text = "0" + value;
+                else
+                    textBox.Text = value.ToString();
+            }
+        }
+
+        private bool TryParseTimeInput(string input, out byte firstDigit, out byte secondDigit)
+        {
+            firstDigit = secondDigit = 0;
+
+            if (
+                string.IsNullOrEmpty(input)
+                || input.Length != 2
+                || !char.IsDigit(input[0])
+                || !char.IsDigit(input[1])
+            )
+                return false;
+
+            firstDigit = (byte)input[0];
+            secondDigit = (byte)input[1];
+            return true;
         }
 
         private void send_data(string data)
         {
             try
             {
-                serialPort.Write(data);
+                if (usbHidPort.SpecifiedDevice == null)
+                    return;
+
+                writebuff[1] = (byte)data[0];
+                usbHidPort.SpecifiedDevice.SendData(writebuff);
             }
             catch (Exception)
             {
@@ -316,6 +451,18 @@ namespace app
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            usbHidPort.RegisterHandle(Handle);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            usbHidPort.ParseMessages(ref m);
         }
 
         #endregion
