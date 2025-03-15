@@ -61,7 +61,6 @@ Debug
 *.dbg
 *.dct
 *.dlt
-*.hex
 *.lst
 *.dic
 *_callertable.txt
@@ -84,6 +83,7 @@ Debug
 # Proteus Backup files
 *_BACKUP_*
 *_BACKUP/
+Project Backups/
 
 # Proteus output files
 *.pdsprj.workspace

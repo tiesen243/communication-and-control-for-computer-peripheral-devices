@@ -1,155 +1,187 @@
-#define LED_RED LATE0_bit
-#define LED_YELLOW LATE1_bit
-#define LED_GREEN LATE2_bit
-int DURATIONS[4] = {5, 3, 10, 1}; // Red, Yellow, Green, Blink duration
-
-char SEND_MSG[9] = {'K', 'Z', 'E', 'R', 'G', 'O', 'Y', 'M', 'A'};
-char RECEIVE_MSG[7] = {'1', '2', '3', 'T', 'D', 'N', 'I'};
-
-/* Mode:
- * mode 1: red
- * mode 2: blinking yellow
- * mode 3:
- * - day mode: red -> yellow -> green -> red
- * - night mode: blinking yellow
+/*
+ * Button at PORTB0, PORTB1, PORTB2
+ * - PORTB0: Mode 1
+ * - PORTB1: Mode 2
+ * - PORTB2: Mode 3
+ * LED at PORTB5, PORTB6, PORTB7
+ * - PORTB5: Led red
+ * - PORTB6: Led yellow
+ * - PORTB7: Led green
  */
-int mode = 3, is_night_mode = 0;
-/* Control source:
- * 0: button
- * 1: serial
- */
-int control_source = 0;
+const int Buttons[3] = {0b00000001, 0b00000010, 0b00000100};
+const int Leds[3] = {0b00100000, 0b01000000, 0b10000000};
+const int reset = 0b00000000;
 
-/* Communication functions */
+char send_msgs[11] = {'1', '2', '3', 'M', 'A', 'R', 'O', 'Y', 'G', 'E', 'S'};
+char receive_msgs[7] = {'T', 'D', 'N', 'S'};
+int durations[4] = {5, 3, 10, 1}; /* Red, yellow, green, blink yellow */
+
+/* Mode
+ * - 1: Ony red led
+ * - 2: Blink yellow led 1s
+ * - 3:
+ *   + Day mode: 5s red -> 3s yellow -> 10s green -> loop
+ *   + Night mode: blink yellow led 1s
+ */
+int mode = 3;
+int is_night_mode = 0;
+
+/* Control mode
+ * - 0: Manual mode
+ * - 1: Auto mode
+ */
+int control_mode = 0;
+
+/* Communication */
+const int PORT = 9600;
 
 void setup_communication() {
-  UART1_Init(9600);
+  UART1_Init(PORT);
   Delay_ms(100);
 }
 
-void send_data(char msg) { UART1_Write(msg); }
+void send_msg(char msg) {
+  if (!UART1_Tx_Idle())
+    return;
 
-char receive_data() {
-  if (UART1_Data_Ready())
-    return UART1_Read();
-  return 0;
+  UART1_Write(msg);
+  Delay_ms(100);
 }
 
-/* Main functions */
+char receive_msg() {
+  if (!UART1_Data_Ready())
+    return 0;
+  return UART1_Read();
+}
 
-void ovr_delay(int time);
+void set_time() {
+  int i;
+  char time[7];
 
-int main() {
-  ADCON1 |= 0x0F;
-  CMCON |= 0X07;
+  for (i = 0; i < 6; i++) {
+    while (!UART1_Data_Ready())
+      ;
+    time[i] = UART1_Read();
 
-  // Button setup (RB0, RB1, RB2)
-  PORTB = 0x00;
-  LATB = 0x00;
-  TRISB = 0x07;
+    if (time[i] == 'S')
+      i = -1;
+  }
+  time[6] = '\0';
 
-  // LED setup (RE0, RE1, RE2)
-  PORTE = 0x00;
-  LATE = 0x00;
-  TRISE = 0x00;
-
-  setup_communication();
-
-  while (1) {
-    if (mode == 1) {
-      LED_RED = 1;
-      send_data(SEND_MSG[3]);
-      ovr_delay(DURATIONS[0]);
-    } else if (mode == 2) {
-      LED_YELLOW = 1 - LED_YELLOW;
-      send_data(SEND_MSG[5 + LED_YELLOW]);
-      ovr_delay(DURATIONS[3]);
-    } else if (mode == 3) {
-      if (is_night_mode) {
-        LED_YELLOW = 1 - LED_YELLOW;
-        send_data(SEND_MSG[5 + LED_YELLOW]);
-        ovr_delay(DURATIONS[3]);
-      } else {
-        if (LED_RED) {
-          LED_RED = 0;
-          LED_YELLOW = 1;
-          send_data(SEND_MSG[6]);
-          ovr_delay(DURATIONS[1]);
-        } else if (LED_YELLOW) {
-          LED_YELLOW = 0;
-          LED_GREEN = 1;
-          send_data(SEND_MSG[4]);
-          ovr_delay(DURATIONS[2]);
-        } else {
-          LED_GREEN = 0;
-          LED_RED = 1;
-          send_data(SEND_MSG[3]);
-          ovr_delay(DURATIONS[0]);
-        }
-      }
+  for (i = 0; i < 6; i++) {
+    if (i % 2 == 0 && (time[i] < '0' || time[i] > '5')) {
+      send_msg(send_msgs[9]);
+      return;
+    } else if (i % 2 == 1 && (time[i] < '0' || time[i] > '9')) {
+      send_msg(send_msgs[9]);
+      return;
     }
   }
 
-  return 0;
+  durations[0] = (time[0] - '0') * 10 + (time[1] - '0');
+  durations[1] = (time[2] - '0') * 10 + (time[3] - '0');
+  durations[2] = (time[4] - '0') * 10 + (time[5] - '0');
+
+  send_msg(send_msgs[10]);
 }
 
-void reset_leds() {
-  LED_RED = 0;
-  LED_YELLOW = 0;
-  LED_GREEN = 0;
+/* Main */
+
+void setup() {
+  ADCON1 |= 0x0F;
+  CMCON |= 0X07;
+
+  TRISB = 0b00000111;
+  PORTB = 0b00000000;
+
+  setup_communication();
 }
 
 void switch_mode(int newMode) {
-  reset_leds();
   mode = newMode;
-  send_data(SEND_MSG[mode - 1]);
+  send_msg(send_msgs[newMode - 1]);
+  PORTB = reset;
+  Delay_ms(100);
 }
 
-void ovr_delay(int time) {
+void delay(int duration) {
   int i, j;
 
-  for (i = 0; i < time * 10; i++) {
-    char res = receive_data();
+  for (i = 0; i < duration * 10; i++) {
 
-    // Serial control
-    if (res == RECEIVE_MSG[3]) {
-      control_source = 1 - control_source;
-      send_data(SEND_MSG[control_source + 7]);
-    } else if (res == RECEIVE_MSG[4]) {
+    // Check receive message
+    char msg = receive_msg();
+    if (msg == receive_msgs[0]) {
+      control_mode = 1 - control_mode;
+      send_msg(send_msgs[3 + control_mode]);
+    } else if (msg == receive_msgs[1]) {
       is_night_mode = 0;
       if (mode == 3) {
-        reset_leds();
-        i = time * 10 + 1;
+        PORTB = reset;
+        return;
       }
-    } else if (res == RECEIVE_MSG[5]) {
+    } else if (msg == receive_msgs[2]) {
       is_night_mode = 1;
       if (mode == 3) {
-        reset_leds();
-        i = time * 10 + 1;
+        PORTB = reset;
+        return;
       }
-    } else if (res == RECEIVE_MSG[6]) {
-      send_data(SEND_MSG[mode - 1]);
-      Delay_ms(100);
-      send_data(SEND_MSG[control_source + 7]);
-    } else if (control_source == 1) {
-      int newMode = res - '0';
-      if (newMode >= 1 && newMode <= 3 && newMode != mode) {
+    } else if (msg == receive_msgs[3]) {
+      set_time();
+      if (mode == 3) {
+        PORTB = reset;
+        return;
+      }
+    } else if (control_mode == 1) {
+      int newMode = msg - '0';
+      if (newMode >= 1 && newMode <= 3) {
         switch_mode(newMode);
-        i = time * 10 + 1;
+        return;
       }
     }
 
-    // Button control
+    // Check button
     for (j = 0; j < 3; j++)
-      if (BUTTON(&PORTB, j, 10, 0) && control_source == 0) {
-        while (BUTTON(&PORTB, j, 10, 0))
+      if (Button(&PORTB, j, 10, 0) && control_mode == 0) {
+        while (Button(&PORTB, j, 10, 0))
           ;
-        if (j + 1 != mode) {
-          switch_mode(j + 1);
-          i = time * 10 + 1;
-        }
+        switch_mode(j + 1);
+        return;
       }
 
     Delay_ms(100);
   }
+}
+
+void loop() {
+  if (mode == 1) {
+    PORTB = Leds[0];
+    send_msg(send_msgs[5]);
+    delay(durations[0]);
+  } else if (mode == 2 || (mode == 3 && is_night_mode)) {
+    PORTB ^= Leds[1];
+    send_msg(send_msgs[(PORTB & Leds[1]) ? 7 : 6]);
+    delay(durations[3]);
+  } else if (mode == 3 && !is_night_mode) {
+    if ((PORTB & 0xE0) == (Leds[0] & 0xE0)) {
+      PORTB = Leds[1];
+      send_msg(send_msgs[7]);
+      delay(durations[1]);
+    } else if ((PORTB & 0xE0) == (Leds[1] & 0xE0)) {
+      PORTB = Leds[2];
+      send_msg(send_msgs[8]);
+      delay(durations[2]);
+    } else {
+      PORTB = Leds[0];
+      send_msg(send_msgs[5]);
+      delay(durations[0]);
+    }
+  }
+}
+
+int main() {
+  setup();
+  while (1)
+    loop();
+  return 0;
 }
