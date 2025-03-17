@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.IO.Ports;
 using System.Windows.Forms;
 using UsbLibrary;
 
@@ -33,6 +32,9 @@ namespace yuki
         private readonly char[] RECEIVE_MSGS = { 'M', 'A', 'R', 'O', 'Y', 'G', 'E', 'S' };
         private readonly char[] SEND_MSGS = { 'T', 'D', 'N', 'I', 'S' };
 
+        byte[] readbuff = new byte[8];
+        byte[] writebuff = new byte[8];
+
         public Yuki()
         {
             InitializeComponent();
@@ -40,7 +42,6 @@ namespace yuki
 
             this.BackColor = backgroundColor;
             this.ForeColor = foregroundColor;
-            StyleButton(button_connect, connectedColor);
             StyleButton(button_save_time, primaryColor);
             StyleButton(button_mode_1, primaryColor);
             StyleButton(button_mode_2, primaryColor);
@@ -54,9 +55,10 @@ namespace yuki
         private void Yuki_Load(object sender, EventArgs e)
         {
             timer.Start();
-
-            string[] ports = SerialPort.GetPortNames();
-            comboBox_Comp.Items.AddRange(ports);
+            usbHidPort.VendorId = 0x04D8;
+            usbHidPort.ProductId = 0x0001;
+            usbHidPort.RegisterHandle(this.Handle);
+            usbHidPort.CheckDevicePresent();
         }
 
         private void Yuki_FormClosing(object sender, FormClosingEventArgs e)
@@ -77,58 +79,54 @@ namespace yuki
 
         #region Connectivity
 
+
+        private void usbHidPort_OnSpecifiedDeviceArrived(object sender, EventArgs e)
+        {
+            label_status.Text = "Connected";
+            label_status.ForeColor = connectedColor;
+
+            button_control_state.Enabled = true;
+            button_control_state.Text = "Manual";
+
+            toggle(true);
+
+            sendMsg(SEND_MSGS[3]);
+        }
+
+        private void usbHidPort_OnSpecifiedDeviceRemoved(object sender, EventArgs e)
+        {
+            if (InvokeRequired)
+                Invoke(
+                    new EventHandler(usbHidPort_OnSpecifiedDeviceRemoved),
+                    new object[] { sender, e }
+                );
+            else
+            {
+                label_status.Text = "Disconnected";
+                label_status.ForeColor = disconnectedColor;
+
+                button_control_state.Enabled = false;
+                button_control_state.Text = "No Signal";
+
+                toggle(false);
+            }
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            usbHidPort.RegisterHandle(Handle);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            usbHidPort.ParseMessages(ref m);
+        }
+
         private void usbHidPort_OnDeviceArrived(object sender, EventArgs e) { }
 
         private void usbHidPort_OnDeviceRemoved(object sender, EventArgs e) { }
-
-        private void usbHidPort_OnSpecifiedDeviceArrived(object sender, EventArgs e) { }
-
-        private void usbHidPort_OnSpecifiedDeviceRemoved(object sender, EventArgs e) { }
-
-        private void button_connect_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (serialPort.IsOpen)
-                {
-                    serialPort.Close();
-                    comboBox_Comp.Enabled = true;
-
-                    button_connect.Text = "Connect";
-                    StyleButton(button_connect, connectedColor);
-
-                    label_status.Text = "Disconnected";
-                    label_status.ForeColor = disconnectedColor;
-
-                    button_control_state.Enabled = false;
-                    button_control_state.Text = "No Signal";
-
-                    toggle(false);
-                }
-                else
-                {
-                    serialPort.Open();
-                    comboBox_Comp.Enabled = false;
-
-                    button_connect.Text = "Disconnect";
-                    StyleButton(button_connect, disconnectedColor);
-
-                    label_status.Text = "Connected";
-                    label_status.ForeColor = connectedColor;
-
-                    button_control_state.Enabled = true;
-                    button_control_state.Text = "Manual";
-
-                    toggle(true);
-
-                    sendMsg(SEND_MSGS[3]);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
-            }
-        }
 
         #endregion
 
@@ -139,7 +137,11 @@ namespace yuki
         {
             try
             {
-                serialPort.Write(msg.ToString());
+                if (usbHidPort.SpecifiedDevice == null)
+                    return;
+
+                writebuff[1] = (byte)msg;
+                usbHidPort.SpecifiedDevice.SendData(writebuff);
             }
             catch (Exception ex)
             {
@@ -147,65 +149,45 @@ namespace yuki
             }
         }
 
-        private void usbHidPort_OnDataRecieved(
-            object sender,
-            UsbLibrary.DataRecievedEventArgs args
-        ) { }
-
-        private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void usbHidPort_OnDataRecieved(object sender, UsbLibrary.DataRecievedEventArgs args)
         {
-            string data = serialPort.ReadExisting();
-            this.Invoke(
-                new EventHandler(
-                    delegate
-                    {
-                        if (data == RECEIVE_MSGS[0].ToString())
-                        {
-                            button_control_state.Text = "Manual";
-                            controlSource = ControlSource.Manual;
-                            toggle(true);
-                        }
-                        else if (data == RECEIVE_MSGS[1].ToString())
-                        {
-                            button_control_state.Text = "Auto";
-                            controlSource = ControlSource.Auto;
-                            toggle(true);
-                        }
-                        else if (data == RECEIVE_MSGS[2].ToString())
-                        {
-                            pictureBox_led_status.Image = Properties.Resources.red;
-                        }
-                        else if (data == RECEIVE_MSGS[3].ToString())
-                        {
-                            pictureBox_led_status.Image = Properties.Resources.off;
-                        }
-                        else if (data == RECEIVE_MSGS[4].ToString())
-                        {
-                            pictureBox_led_status.Image = Properties.Resources.yellow;
-                        }
-                        else if (data == RECEIVE_MSGS[5].ToString())
-                        {
-                            pictureBox_led_status.Image = Properties.Resources.green;
-                        }
-                        else if (data == RECEIVE_MSGS[6].ToString())
-                        {
-                            MessageBox.Show("Time saved failed", "Error", MessageBoxButtons.OK);
-                        }
-                        else if (data == RECEIVE_MSGS[7].ToString())
-                        {
-                            MessageBox.Show(
-                                "Time saved successfully",
-                                "Success",
-                                MessageBoxButtons.OK
-                            );
-                        }
-                        else if (data.Length == 1 && data[0] >= '1' && data[0] <= '3')
-                        {
-                            label_mode_value.Text = data;
-                        }
-                    }
-                )
-            );
+            char data = (char)args.data[1];
+
+            if (InvokeRequired)
+            {
+                Invoke(
+                    new EventHandler<UsbLibrary.DataRecievedEventArgs>(usbHidPort_OnDataRecieved),
+                    new object[] { sender, args }
+                );
+                return;
+            }
+
+            if (data == RECEIVE_MSGS[0])
+            {
+                button_control_state.Text = "Manual";
+                controlSource = ControlSource.Manual;
+                toggle(true);
+            }
+            else if (data == RECEIVE_MSGS[1])
+            {
+                button_control_state.Text = "Auto";
+                controlSource = ControlSource.Auto;
+                toggle(true);
+            }
+            else if (data == RECEIVE_MSGS[2])
+                pictureBox_led_status.Image = Properties.Resources.red;
+            else if (data == RECEIVE_MSGS[3])
+                pictureBox_led_status.Image = Properties.Resources.off;
+            else if (data == RECEIVE_MSGS[4])
+                pictureBox_led_status.Image = Properties.Resources.yellow;
+            else if (data == RECEIVE_MSGS[5])
+                pictureBox_led_status.Image = Properties.Resources.green;
+            else if (data == RECEIVE_MSGS[6])
+                MessageBox.Show("Time saved failed", "Error", MessageBoxButtons.OK);
+            else if (data == RECEIVE_MSGS[7])
+                MessageBox.Show("Time saved successfully", "Success", MessageBoxButtons.OK);
+            else if (data >= '1' && data <= '3')
+                label_mode_value.Text = data.ToString();
         }
 
         #endregion
@@ -250,9 +232,9 @@ namespace yuki
                 return;
             }
 
-            serialPort.Write(SEND_MSGS[4].ToString() + redTime + yellowTime + greenTime);
-            System.Threading.Thread.Sleep(200);
-            serialPort.Write(SEND_MSGS[4].ToString() + redTime + yellowTime + greenTime);
+            /*serialPort.Write(SEND_MSGS[4].ToString() + redTime + yellowTime + greenTime);*/
+            /*System.Threading.Thread.Sleep(200);*/
+            /*serialPort.Write(SEND_MSGS[4].ToString() + redTime + yellowTime + greenTime);*/
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -261,7 +243,7 @@ namespace yuki
 
             label_time_value.Text = current.ToString("HH:mm:ss");
 
-            if (!serialPort.IsOpen)
+            if (usbHidPort.SpecifiedDevice == null)
                 return;
 
             if ((current.Hour >= 23 || current.Hour < 5) && timeMode != Mode.Night)
@@ -283,6 +265,18 @@ namespace yuki
 
         private void toggle(bool isEnabled)
         {
+            if (InvokeRequired)
+            {
+                Invoke(
+                    (MethodInvoker)
+                        delegate
+                        {
+                            toggle(isEnabled);
+                        }
+                );
+                return;
+            }
+
             button_mode_1.Enabled = isEnabled && controlSource == ControlSource.Auto;
             button_mode_2.Enabled = isEnabled && controlSource == ControlSource.Auto;
             button_mode_3.Enabled = isEnabled && controlSource == ControlSource.Auto;

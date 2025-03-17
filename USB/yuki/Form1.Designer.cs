@@ -32,8 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Yuki));
             this.groupBox_connection = new System.Windows.Forms.GroupBox();
             this.label_status = new System.Windows.Forms.Label();
-            this.button_connect = new System.Windows.Forms.Button();
-            this.comboBox_Comp = new System.Windows.Forms.ComboBox();
             this.groupBox_information = new System.Windows.Forms.GroupBox();
             this.pictureBox_led_status = new System.Windows.Forms.PictureBox();
             this.button_control_state = new System.Windows.Forms.Button();
@@ -56,6 +54,7 @@
             this.label_title = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.usbHidPort = new UsbLibrary.UsbHidPort(this.components);
+            this.usbHidPort1 = new UsbLibrary.UsbHidPort(this.components);
             this.groupBox_connection.SuspendLayout();
             this.groupBox_information.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_led_status)).BeginInit();
@@ -65,8 +64,6 @@
             // groupBox_connection
             // 
             this.groupBox_connection.Controls.Add(this.label_status);
-            this.groupBox_connection.Controls.Add(this.button_connect);
-            this.groupBox_connection.Controls.Add(this.comboBox_Comp);
             this.groupBox_connection.Location = new System.Drawing.Point(14, 77);
             this.groupBox_connection.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox_connection.Name = "groupBox_connection";
@@ -80,35 +77,12 @@
             // 
             this.label_status.Font = new System.Drawing.Font("Geist Medium", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_status.ForeColor = System.Drawing.Color.Red;
-            this.label_status.Location = new System.Drawing.Point(148, 96);
+            this.label_status.Location = new System.Drawing.Point(148, 62);
             this.label_status.Name = "label_status";
             this.label_status.Size = new System.Drawing.Size(160, 27);
             this.label_status.TabIndex = 2;
             this.label_status.Text = "Disconnected";
             this.label_status.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // button_connect
-            // 
-            this.button_connect.Enabled = false;
-            this.button_connect.Location = new System.Drawing.Point(278, 37);
-            this.button_connect.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
-            this.button_connect.Name = "button_connect";
-            this.button_connect.Size = new System.Drawing.Size(164, 32);
-            this.button_connect.TabIndex = 1;
-            this.button_connect.Text = "Connect";
-            this.button_connect.UseVisualStyleBackColor = true;
-            this.button_connect.Click += new System.EventHandler(this.button_connect_Click);
-            // 
-            // comboBox_Comp
-            // 
-            this.comboBox_Comp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox_Comp.FormattingEnabled = true;
-            this.comboBox_Comp.Location = new System.Drawing.Point(15, 40);
-            this.comboBox_Comp.Margin = new System.Windows.Forms.Padding(3, 3, 9, 3);
-            this.comboBox_Comp.Name = "comboBox_Comp";
-            this.comboBox_Comp.Size = new System.Drawing.Size(245, 28);
-            this.comboBox_Comp.TabIndex = 0;
-            this.comboBox_Comp.SelectedIndexChanged += new System.EventHandler(this.comboBox_Comp_SelectedIndexChanged);
             // 
             // groupBox_information
             // 
@@ -362,6 +336,11 @@
             this.usbHidPort.OnDeviceRemoved += new System.EventHandler(this.usbHidPort_OnDeviceRemoved);
             this.usbHidPort.OnDataRecieved += new UsbLibrary.DataRecievedEventHandler(this.usbHidPort_OnDataRecieved);
             // 
+            // usbHidPort1
+            // 
+            this.usbHidPort1.ProductId = 0;
+            this.usbHidPort1.VendorId = 0;
+            // 
             // Yuki
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
@@ -398,8 +377,6 @@
         private System.Windows.Forms.GroupBox groupBox_information;
         private System.Windows.Forms.GroupBox Controller;
         private System.Windows.Forms.Label label_title;
-        private System.Windows.Forms.Button button_connect;
-        private System.Windows.Forms.ComboBox comboBox_Comp;
         private System.Windows.Forms.Label label_status;
         private System.Windows.Forms.Label label_time;
         private System.Windows.Forms.Label label_time_value;
@@ -420,5 +397,6 @@
         private System.Windows.Forms.Button button_mode_3;
         private System.Windows.Forms.Button button_mode_2;
         private UsbLibrary.UsbHidPort usbHidPort;
+        private UsbLibrary.UsbHidPort usbHidPort1;
     }
 }

@@ -171,37 +171,23 @@ namespace yuki
                             toggle(true);
                         }
                         else if (data == RECEIVE_MSGS[2].ToString())
-                        {
                             pictureBox_led_status.Image = Properties.Resources.red;
-                        }
                         else if (data == RECEIVE_MSGS[3].ToString())
-                        {
                             pictureBox_led_status.Image = Properties.Resources.off;
-                        }
                         else if (data == RECEIVE_MSGS[4].ToString())
-                        {
                             pictureBox_led_status.Image = Properties.Resources.yellow;
-                        }
                         else if (data == RECEIVE_MSGS[5].ToString())
-                        {
                             pictureBox_led_status.Image = Properties.Resources.green;
-                        }
                         else if (data == RECEIVE_MSGS[6].ToString())
-                        {
                             MessageBox.Show("Time saved failed", "Error", MessageBoxButtons.OK);
-                        }
                         else if (data == RECEIVE_MSGS[7].ToString())
-                        {
                             MessageBox.Show(
                                 "Time saved successfully",
                                 "Success",
                                 MessageBoxButtons.OK
                             );
-                        }
                         else if (data.Length == 1 && data[0] >= '1' && data[0] <= '3')
-                        {
                             label_mode_value.Text = data;
-                        }
                     }
                 )
             );
