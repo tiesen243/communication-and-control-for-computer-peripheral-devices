@@ -12,8 +12,9 @@ const int BUTTONS[3] = {0b00000001, 0b00000010, 0b00000100};
 const int LEDS[3] = {0b00001000, 0b00010000, 0b00100000};
 const int OFF = 0b00000000;
 
-char SEND_MSGS[11] = {'1', '2', '3', 'M', 'A', 'R', 'O', 'Y', 'G', 'E', 'S'};
-char RECEIVE_MSGS[5] = {'T', 'D', 'N', 'I', 'S'};
+const char SEND_MSGS[11] = {'1', '2', '3', 'M', 'A', 'R',
+                            'O', 'Y', 'G', 'E', 'S'};
+const char RECEIVE_MSGS[5] = {'T', 'D', 'N', 'I', 'S'};
 int durations[4] = {5, 3, 10, 1}; /* Red, yellow, green, blink yellow */
 
 /* Mode
@@ -101,7 +102,7 @@ void loop() {
     delay(durations[0]);
   } else if (mode == 2 || (mode == 3 && is_night_mode)) {
     PORTB ^= LEDS[1];
-    send_msg((PORTB & 0x38) == LEDS[1] ? 6 : 7);
+    send_msg((PORTB & 0x38) == LEDS[1] ? 7 : 6);
     delay(durations[3]);
   } else if (mode == 3) {
     if ((PORTB & 0x38) == LEDS[0]) {
@@ -126,10 +127,14 @@ void main() {
     loop();
 }
 
-void switch_mode(int newMode) {
+int switch_mode(int newMode) {
+  if (mode == newMode)
+    return 0;
+
   PORTB = OFF;
   mode = newMode;
   send_msg(newMode - 1);
+  return 1;
 }
 
 void delay(int delay_s) {
@@ -168,8 +173,8 @@ void delay(int delay_s) {
     } else if (control_mode == 1) {
       int newMode = msg - '0';
       if (newMode >= 1 && newMode <= 3) {
-        switch_mode(newMode);
-        return;
+        if (switch_mode(newMode))
+          return;
       }
     }
 
@@ -178,8 +183,8 @@ void delay(int delay_s) {
       if (Button(&PORTB, j, 10, 0) && control_mode == 0) {
         while (Button(&PORTB, j, 10, 0))
           ;
-        switch_mode(j + 1);
-        return;
+        if (switch_mode(j + 1))
+          return;
       }
 
     Delay_ms(100);

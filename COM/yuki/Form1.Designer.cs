@@ -147,6 +147,7 @@
             this.button_control_state.TabIndex = 5;
             this.button_control_state.Text = "No Signal";
             this.button_control_state.UseVisualStyleBackColor = true;
+            this.button_control_state.Click += new System.EventHandler(this.button_control_state_Click);
             // 
             // label_control
             // 
@@ -233,6 +234,7 @@
             this.button_mode_3.TabIndex = 9;
             this.button_mode_3.Text = "Mode 3";
             this.button_mode_3.UseVisualStyleBackColor = true;
+            this.button_mode_3.Click += new System.EventHandler(this.button_mode_Click);
             // 
             // button_mode_2
             // 
@@ -244,6 +246,7 @@
             this.button_mode_2.TabIndex = 8;
             this.button_mode_2.Text = "Mode 2";
             this.button_mode_2.UseVisualStyleBackColor = true;
+            this.button_mode_2.Click += new System.EventHandler(this.button_mode_Click);
             // 
             // button_mode_1
             // 
@@ -255,6 +258,7 @@
             this.button_mode_1.TabIndex = 7;
             this.button_mode_1.Text = "Mode 1";
             this.button_mode_1.UseVisualStyleBackColor = true;
+            this.button_mode_1.Click += new System.EventHandler(this.button_mode_Click);
             // 
             // button_save_time
             // 
@@ -265,15 +269,18 @@
             this.button_save_time.TabIndex = 6;
             this.button_save_time.Text = "Save Changes";
             this.button_save_time.UseVisualStyleBackColor = true;
+            this.button_save_time.Click += new System.EventHandler(this.button_save_time_Click);
             // 
             // textBox_green_value
             // 
+            this.textBox_green_value.Enabled = false;
             this.textBox_green_value.Location = new System.Drawing.Point(100, 109);
             this.textBox_green_value.Name = "textBox_green_value";
             this.textBox_green_value.Size = new System.Drawing.Size(92, 28);
             this.textBox_green_value.TabIndex = 5;
             this.textBox_green_value.Text = "10";
             this.textBox_green_value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_green_value.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.validateTime);
             // 
             // label_green
             // 
@@ -288,12 +295,14 @@
             // 
             // textBox_yellow_value
             // 
+            this.textBox_yellow_value.Enabled = false;
             this.textBox_yellow_value.Location = new System.Drawing.Point(100, 75);
             this.textBox_yellow_value.Name = "textBox_yellow_value";
             this.textBox_yellow_value.Size = new System.Drawing.Size(92, 28);
             this.textBox_yellow_value.TabIndex = 3;
             this.textBox_yellow_value.Text = "3";
             this.textBox_yellow_value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_yellow_value.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.validateTime);
             // 
             // label_yellow
             // 
@@ -308,12 +317,14 @@
             // 
             // textBox_red_value
             // 
+            this.textBox_red_value.Enabled = false;
             this.textBox_red_value.Location = new System.Drawing.Point(100, 41);
             this.textBox_red_value.Name = "textBox_red_value";
             this.textBox_red_value.Size = new System.Drawing.Size(92, 28);
             this.textBox_red_value.TabIndex = 1;
             this.textBox_red_value.Text = "5";
             this.textBox_red_value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_red_value.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.validateTime);
             // 
             // label_red
             // 
@@ -344,6 +355,7 @@
             // serialPort
             // 
             this.serialPort.PortName = "COM2";
+            this.serialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort_DataReceived);
             // 
             // Yuki
             // 
@@ -358,8 +370,11 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.MaximizeBox = false;
             this.Name = "Yuki";
             this.Text = "Yuki";
+            this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Yuki_FormClosing);
             this.Load += new System.EventHandler(this.Yuki_Load);
             this.groupBox_connection.ResumeLayout(false);
             this.groupBox_information.ResumeLayout(false);
