@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using UsbLibrary;
 
 namespace yuki
 {
@@ -12,11 +11,8 @@ namespace yuki
         Manual,
     }
 
-    public enum Mode
+    public enum DayNightMode
     {
-        Mode1,
-        Mode2,
-        Mode3,
         Night,
         Day,
     }
@@ -26,8 +22,7 @@ namespace yuki
         #region Initialization
 
         private ControlSource controlSource = ControlSource.Manual;
-        private Mode mode = Mode.Mode1;
-        private Mode timeMode = Mode.Day;
+        private DayNightMode timeMode = DayNightMode.Day;
 
         private readonly char[] RECEIVE_MSGS = { 'M', 'A', 'R', 'O', 'Y', 'G', 'E', 'S' };
         private readonly char[] SEND_MSGS = { 'T', 'D', 'N', 'I', 'S' };
@@ -232,9 +227,18 @@ namespace yuki
                 return;
             }
 
-            /*serialPort.Write(SEND_MSGS[4].ToString() + redTime + yellowTime + greenTime);*/
-            /*System.Threading.Thread.Sleep(200);*/
-            /*serialPort.Write(SEND_MSGS[4].ToString() + redTime + yellowTime + greenTime);*/
+            writebuff = new byte[8]
+            {
+                0x00,
+                (byte)SEND_MSGS[4],
+                (byte)redTime[0],
+                (byte)redTime[1],
+                (byte)yellowTime[0],
+                (byte)yellowTime[1],
+                (byte)greenTime[0],
+                (byte)greenTime[1],
+            };
+            usbHidPort.SpecifiedDevice.SendData(writebuff);
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -243,17 +247,14 @@ namespace yuki
 
             label_time_value.Text = current.ToString("HH:mm:ss");
 
-            if (usbHidPort.SpecifiedDevice == null)
-                return;
-
-            if ((current.Hour >= 23 || current.Hour < 5) && timeMode != Mode.Night)
+            if ((current.Hour >= 23 || current.Hour < 5) && timeMode != DayNightMode.Night)
             {
-                timeMode = Mode.Night;
+                timeMode = DayNightMode.Night;
                 sendMsg(SEND_MSGS[2]);
             }
-            else if ((current.Hour >= 5 && current.Hour < 23) && timeMode != Mode.Day)
+            else if ((current.Hour >= 5 && current.Hour < 23) && timeMode != DayNightMode.Day)
             {
-                timeMode = Mode.Day;
+                timeMode = DayNightMode.Day;
                 sendMsg(SEND_MSGS[1]);
             }
         }

@@ -3,7 +3,7 @@
  * - PORTB0: Mode 1
  * - PORTB1: Mode 2
  * - PORTB2: Mode 3
- * LED at PORTB5, PORTB6, PORTB7
+ * LED at PORTB3, PORTB4, PORTB5
  * - PORTB3: Led red
  * - PORTB4: Led yellow
  * - PORTB5: Led green
