@@ -4,16 +4,16 @@
  * - PORTB1: Mode 2
  * - PORTB2: Mode 3
  * LED at PORTB5, PORTB6, PORTB7
- * - PORTB5: Led red
- * - PORTB6: Led yellow
- * - PORTB7: Led green
+ * - PORTB3: Led red
+ * - PORTB4: Led yellow
+ * - PORTB5: Led green
  */
-const int Buttons[3] = {0b00000001, 0b00000010, 0b00000100};
-const int Leds[3] = {0b00100000, 0b01000000, 0b10000000};
-const int reset = 0b00000000;
+const int BUTTONS[3] = {0b00000001, 0b00000010, 0b00000100};
+const int LEDS[3] = {0b00001000, 0b00010000, 0b00100000};
+const int OFF = 0b00000000;
 
-char send_msgs[11] = {'1', '2', '3', 'M', 'A', 'R', 'O', 'Y', 'G', 'E', 'S'};
-char receive_msgs[7] = {'T', 'D', 'N', 'S'};
+char SEND_MSGS[11] = {'1', '2', '3', 'M', 'A', 'R', 'O', 'Y', 'G', 'E', 'S'};
+char RECEIVE_MSGS[5] = {'T', 'D', 'N', 'I', 'S'};
 int durations[4] = {5, 3, 10, 1}; /* Red, yellow, green, blink yellow */
 
 /* Mode
@@ -40,11 +40,11 @@ void setup_communication() {
   Delay_ms(100);
 }
 
-void send_msg(char msg) {
+void send_msg(int index) {
   if (!UART1_Tx_Idle())
     return;
 
-  UART1_Write(msg);
+  UART1_Write(SEND_MSGS[index]);
   Delay_ms(100);
 }
 
@@ -69,11 +69,7 @@ void set_time() {
   time[6] = '\0';
 
   for (i = 0; i < 6; i++) {
-    if (i % 2 == 0 && (time[i] < '0' || time[i] > '5')) {
-      send_msg(send_msgs[9]);
-      return;
-    } else if (i % 2 == 1 && (time[i] < '0' || time[i] > '9')) {
-      send_msg(send_msgs[9]);
+    if (time[i] < '0' || time[i] > '9') {
       return;
     }
   }
@@ -81,55 +77,92 @@ void set_time() {
   durations[0] = (time[0] - '0') * 10 + (time[1] - '0');
   durations[1] = (time[2] - '0') * 10 + (time[3] - '0');
   durations[2] = (time[4] - '0') * 10 + (time[5] - '0');
-
-  send_msg(send_msgs[10]);
+  send_msg(10);
 }
 
 /* Main */
+
+void delay(int duration);
 
 void setup() {
   ADCON1 |= 0x0F;
   CMCON |= 0X07;
 
   TRISB = 0b00000111;
-  PORTB = 0b00000000;
+  PORTB = OFF;
 
   setup_communication();
 }
 
-void switch_mode(int newMode) {
-  mode = newMode;
-  send_msg(send_msgs[newMode - 1]);
-  PORTB = reset;
-  Delay_ms(100);
+void loop() {
+  if (mode == 1) {
+    PORTB = LEDS[0];
+    send_msg(5);
+    delay(durations[0]);
+  } else if (mode == 2 || (mode == 3 && is_night_mode)) {
+    PORTB ^= LEDS[1];
+    send_msg((PORTB & 0x38) == LEDS[1] ? 6 : 7);
+    delay(durations[3]);
+  } else if (mode == 3) {
+    if ((PORTB & 0x38) == LEDS[0]) {
+      PORTB = LEDS[1];
+      send_msg(7);
+      delay(durations[1]);
+    } else if ((PORTB & 0x38) == LEDS[1]) {
+      PORTB = LEDS[2];
+      send_msg(8);
+      delay(durations[2]);
+    } else {
+      PORTB = LEDS[0];
+      send_msg(5);
+      delay(durations[0]);
+    }
+  }
 }
 
-void delay(int duration) {
+void main() {
+  setup();
+  while (1)
+    loop();
+}
+
+void switch_mode(int newMode) {
+  PORTB = OFF;
+  mode = newMode;
+  send_msg(newMode - 1);
+}
+
+void delay(int delay_s) {
   int i, j;
 
-  for (i = 0; i < duration * 10; i++) {
+  for (i = 0; i < delay_s * 10; i++) {
 
     // Check receive message
     char msg = receive_msg();
-    if (msg == receive_msgs[0]) {
+    if (msg == RECEIVE_MSGS[0]) {
       control_mode = 1 - control_mode;
-      send_msg(send_msgs[3 + control_mode]);
-    } else if (msg == receive_msgs[1]) {
+      send_msg(control_mode + 3);
+    } else if (msg == RECEIVE_MSGS[1]) {
       is_night_mode = 0;
       if (mode == 3) {
-        PORTB = reset;
+        PORTB = OFF;
         return;
       }
-    } else if (msg == receive_msgs[2]) {
+    } else if (msg == RECEIVE_MSGS[2]) {
       is_night_mode = 1;
       if (mode == 3) {
-        PORTB = reset;
+        PORTB = OFF;
         return;
       }
-    } else if (msg == receive_msgs[3]) {
+    } else if (msg == RECEIVE_MSGS[3]) {
+      send_msg(mode - 1);
+      Delay_ms(100);
+      send_msg(control_mode + 3);
+    } else if (msg == RECEIVE_MSGS[4]) {
       set_time();
+
       if (mode == 3) {
-        PORTB = reset;
+        PORTB = OFF;
         return;
       }
     } else if (control_mode == 1) {
@@ -151,37 +184,4 @@ void delay(int duration) {
 
     Delay_ms(100);
   }
-}
-
-void loop() {
-  if (mode == 1) {
-    PORTB = Leds[0];
-    send_msg(send_msgs[5]);
-    delay(durations[0]);
-  } else if (mode == 2 || (mode == 3 && is_night_mode)) {
-    PORTB ^= Leds[1];
-    send_msg(send_msgs[(PORTB & Leds[1]) ? 7 : 6]);
-    delay(durations[3]);
-  } else if (mode == 3 && !is_night_mode) {
-    if ((PORTB & 0xE0) == (Leds[0] & 0xE0)) {
-      PORTB = Leds[1];
-      send_msg(send_msgs[7]);
-      delay(durations[1]);
-    } else if ((PORTB & 0xE0) == (Leds[1] & 0xE0)) {
-      PORTB = Leds[2];
-      send_msg(send_msgs[8]);
-      delay(durations[2]);
-    } else {
-      PORTB = Leds[0];
-      send_msg(send_msgs[5]);
-      delay(durations[0]);
-    }
-  }
-}
-
-int main() {
-  setup();
-  while (1)
-    loop();
-  return 0;
 }
