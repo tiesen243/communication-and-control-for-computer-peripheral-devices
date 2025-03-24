@@ -1,6 +1,6 @@
-﻿namespace yuki
+﻿namespace software
 {
-    partial class Yuki
+    partial class Software
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Yuki));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Software));
             this.groupBox_connection = new System.Windows.Forms.GroupBox();
             this.label_status = new System.Windows.Forms.Label();
             this.button_connect = new System.Windows.Forms.Button();
@@ -281,6 +281,7 @@
             this.textBox_green_value.Text = "10";
             this.textBox_green_value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.textBox_green_value.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.validateTime);
+            this.textBox_green_value.Leave += new System.EventHandler(this.validateTime2);
             // 
             // label_green
             // 
@@ -303,6 +304,7 @@
             this.textBox_yellow_value.Text = "3";
             this.textBox_yellow_value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.textBox_yellow_value.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.validateTime);
+            this.textBox_yellow_value.Leave += new System.EventHandler(this.validateTime2);
             // 
             // label_yellow
             // 
@@ -325,6 +327,7 @@
             this.textBox_red_value.Text = "5";
             this.textBox_red_value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.textBox_red_value.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.validateTime);
+            this.textBox_red_value.Leave += new System.EventHandler(this.validateTime2);
             // 
             // label_red
             // 
@@ -357,7 +360,7 @@
             this.serialPort.PortName = "COM2";
             this.serialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort_DataReceived);
             // 
-            // Yuki
+            // Software
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -371,8 +374,8 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
-            this.Name = "Yuki";
-            this.Text = "Yuki";
+            this.Name = "Software";
+            this.Text = "Traffic Light";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Yuki_FormClosing);
             this.Load += new System.EventHandler(this.Yuki_Load);

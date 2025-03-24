@@ -1,10 +1,11 @@
-﻿using System;
+﻿using software;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace yuki
+namespace software
 {
     internal static class Program
     {
@@ -16,7 +17,7 @@ namespace yuki
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Yuki());
+            Application.Run(new Software());
         }
     }
 }
