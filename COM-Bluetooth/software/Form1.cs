@@ -158,36 +158,7 @@ namespace software
                 new EventHandler(
                     delegate
                     {
-                        if (data == RECEIVE_MSGS[0].ToString())
-                        {
-                            button_control_state.Text = "Manual";
-                            controlSource = ControlSource.Manual;
-                            toggle(true);
-                        }
-                        else if (data == RECEIVE_MSGS[1].ToString())
-                        {
-                            button_control_state.Text = "Auto";
-                            controlSource = ControlSource.Auto;
-                            toggle(true);
-                        }
-                        else if (data == RECEIVE_MSGS[2].ToString())
-                            pictureBox_led_status.Image = Properties.Resources.red;
-                        else if (data == RECEIVE_MSGS[3].ToString())
-                            pictureBox_led_status.Image = Properties.Resources.off;
-                        else if (data == RECEIVE_MSGS[4].ToString())
-                            pictureBox_led_status.Image = Properties.Resources.yellow;
-                        else if (data == RECEIVE_MSGS[5].ToString())
-                            pictureBox_led_status.Image = Properties.Resources.green;
-                        else if (data == RECEIVE_MSGS[6].ToString())
-                            MessageBox.Show("Time saved failed", "Error", MessageBoxButtons.OK);
-                        else if (data == RECEIVE_MSGS[7].ToString())
-                            MessageBox.Show(
-                                "Time saved successfully",
-                                "Success",
-                                MessageBoxButtons.OK
-                            );
-                        else if (data.Length == 1 && data[0] >= '1' && data[0] <= '3')
-                            label_mode_value.Text = data;
+                        handleReceivedData(data);
                     }
                 )
             );
@@ -208,6 +179,36 @@ namespace software
             Button btn = (Button)sender;
             string mode = btn.Text;
             sendMsg(mode.Substring(mode.Length - 1)[0]);
+        }
+
+        private void handleReceivedData(string data)
+        {
+            if (data == RECEIVE_MSGS[0].ToString())
+            {
+                button_control_state.Text = "Manual";
+                controlSource = ControlSource.Manual;
+                toggle(true);
+            }
+            else if (data == RECEIVE_MSGS[1].ToString())
+            {
+                button_control_state.Text = "Auto";
+                controlSource = ControlSource.Auto;
+                toggle(true);
+            }
+            else if (data == RECEIVE_MSGS[2].ToString())
+                pictureBox_led_status.Image = Properties.Resources.red;
+            else if (data == RECEIVE_MSGS[3].ToString())
+                pictureBox_led_status.Image = Properties.Resources.off;
+            else if (data == RECEIVE_MSGS[4].ToString())
+                pictureBox_led_status.Image = Properties.Resources.yellow;
+            else if (data == RECEIVE_MSGS[5].ToString())
+                pictureBox_led_status.Image = Properties.Resources.green;
+            else if (data == RECEIVE_MSGS[6].ToString())
+                MessageBox.Show("Time saved failed", "Error", MessageBoxButtons.OK);
+            else if (data == RECEIVE_MSGS[7].ToString())
+                MessageBox.Show("Time saved successfully", "Success", MessageBoxButtons.OK);
+            else if (data.Length == 1 && data[0] >= '1' && data[0] <= '3')
+                label_mode_value.Text = data;
         }
 
         private void button_save_time_Click(object sender, EventArgs e)
@@ -278,23 +279,20 @@ namespace software
             textBox_green_value.Enabled = isEnabled;
         }
 
-        private void validateTime(object sender, KeyPressEventArgs e)
+        private void validateInput(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            if (
+                !char.IsDigit(e.KeyChar)
+                && e.KeyChar != (char)Keys.Back
+                && e.KeyChar != (char)Keys.Delete
+            )
                 e.Handled = true;
-
-            if (sender is TextBox textBox && char.IsDigit(e.KeyChar))
-            {
-                if (textBox.Text.Length >= 2 && textBox.SelectionLength == 0)
-                    e.Handled = true;
-            }
         }
 
-        private void validateTime2(object sender, EventArgs e)
+        private void validateTime(object sender, EventArgs e)
         {
             if (sender is TextBox textBox)
             {
-
                 if (int.Parse(textBox.Text) < 3)
                 {
                     textBox.Text = "03";

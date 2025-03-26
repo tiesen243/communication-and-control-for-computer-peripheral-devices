@@ -174,6 +174,26 @@ namespace software
             }
         }
 
+        #endregion
+
+
+        #region Communication
+
+        private void sendMsg(char msg)
+        {
+            try
+            {
+                byte[] data = Encoding.ASCII.GetBytes(msg.ToString());
+                //client.Send(data, data.Length, SocketFlags.None);
+                client.SendTo(data, data.Length, SocketFlags.None, client.RemoteEndPoint);
+                //MessageBox.Show("Message sent: " + msg, "Success", MessageBoxButtons.OK);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+            }
+        }
+
         private void Receive_Thread()
         {
             try
@@ -184,7 +204,7 @@ namespace software
                     int temp = client.Receive(data_received);
                     string data = Encoding.ASCII.GetString(data_received, 0, temp);
 
-                    handle_DataReceived(data);
+                    handleReceivedData(data);
                 }
             }
             catch (System.Exception)
@@ -210,24 +230,21 @@ namespace software
         #endregion
 
 
-        #region Communication
+        #region Control
 
-        private void sendMsg(char msg)
+        private void button_control_state_Click(object sender, EventArgs e)
         {
-            try
-            {
-                byte[] data = Encoding.ASCII.GetBytes(msg.ToString());
-                //client.Send(data, data.Length, SocketFlags.None);
-                client.SendTo(data, data.Length, SocketFlags.None, client.RemoteEndPoint);
-                //MessageBox.Show("Message sent: " + msg, "Success", MessageBoxButtons.OK);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
-            }
+            sendMsg(SEND_MSGS[0]);
         }
 
-        private void handle_DataReceived(string data)
+        private void button_mode_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            string mode = btn.Text;
+            sendMsg(mode.Substring(mode.Length - 1)[0]);
+        }
+
+        private void handleReceivedData(string data)
         {
             if (data == RECEIVE_MSGS[0].ToString())
             {
@@ -255,23 +272,6 @@ namespace software
                 MessageBox.Show("Time saved successfully", "Success", MessageBoxButtons.OK);
             else if (data.Length == 1 && data[0] >= '1' && data[0] <= '3')
                 label_mode_value.Text = data;
-        }
-
-        #endregion
-
-
-        #region Control
-
-        private void button_control_state_Click(object sender, EventArgs e)
-        {
-            sendMsg(SEND_MSGS[0]);
-        }
-
-        private void button_mode_Click(object sender, EventArgs e)
-        {
-            Button btn = (Button)sender;
-            string mode = btn.Text;
-            sendMsg(mode.Substring(mode.Length - 1)[0]);
         }
 
         private void button_save_time_Click(object sender, EventArgs e)
@@ -345,19 +345,18 @@ namespace software
             textBox_green_value.Enabled = isEnabled;
         }
 
-        private void validateTime(object sender, KeyPressEventArgs e)
+        private void validateInput(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            if (
+                !char.IsDigit(e.KeyChar)
+                && e.KeyChar != (char)Keys.Back
+                && e.KeyChar != (char)Keys.Delete
+                && e.KeyChar != '.'
+            )
                 e.Handled = true;
-
-            if (sender is TextBox textBox && char.IsDigit(e.KeyChar))
-            {
-                if (textBox.Text.Length >= 2 && textBox.SelectionLength == 0)
-                    e.Handled = true;
-            }
         }
 
-        private void validateTime2(object sender, EventArgs e)
+        private void validateTime(object sender, EventArgs e)
         {
             if (sender is TextBox textBox)
             {
