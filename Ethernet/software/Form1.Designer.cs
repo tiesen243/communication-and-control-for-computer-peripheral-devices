@@ -38,6 +38,8 @@
             this.label_status = new System.Windows.Forms.Label();
             this.button_connect = new System.Windows.Forms.Button();
             this.groupBox_information = new System.Windows.Forms.GroupBox();
+            this.label_id = new System.Windows.Forms.Label();
+            this.label_name = new System.Windows.Forms.Label();
             this.pictureBox_led_status = new System.Windows.Forms.PictureBox();
             this.button_control_state = new System.Windows.Forms.Button();
             this.label_control = new System.Windows.Forms.Label();
@@ -145,6 +147,8 @@
             // 
             // groupBox_information
             // 
+            this.groupBox_information.Controls.Add(this.label_id);
+            this.groupBox_information.Controls.Add(this.label_name);
             this.groupBox_information.Controls.Add(this.pictureBox_led_status);
             this.groupBox_information.Controls.Add(this.button_control_state);
             this.groupBox_information.Controls.Add(this.label_control);
@@ -156,25 +160,47 @@
             this.groupBox_information.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox_information.Name = "groupBox_information";
             this.groupBox_information.Padding = new System.Windows.Forms.Padding(12, 8, 12, 8);
-            this.groupBox_information.Size = new System.Drawing.Size(457, 200);
+            this.groupBox_information.Size = new System.Drawing.Size(457, 174);
             this.groupBox_information.TabIndex = 1;
             this.groupBox_information.TabStop = false;
             this.groupBox_information.Text = "Information";
             // 
+            // label_id
+            // 
+            this.label_id.AutoSize = true;
+            this.label_id.Font = new System.Drawing.Font("Geist", 16F);
+            this.label_id.Location = new System.Drawing.Point(325, 122);
+            this.label_id.Name = "label_id";
+            this.label_id.Size = new System.Drawing.Size(117, 28);
+            this.label_id.TabIndex = 7;
+            this.label_id.Text = "22653991";
+            // 
+            // label_name
+            // 
+            this.label_name.AutoSize = true;
+            this.label_name.Font = new System.Drawing.Font("Geist", 16F);
+            this.label_name.Location = new System.Drawing.Point(214, 122);
+            this.label_name.Name = "label_name";
+            this.label_name.Size = new System.Drawing.Size(103, 28);
+            this.label_name.TabIndex = 7;
+            this.label_name.Text = "Trần Tiến";
+            // 
             // pictureBox_led_status
             // 
+            this.pictureBox_led_status.ErrorImage = null;
+            this.pictureBox_led_status.Image = global::software.Properties.Resources.off;
             this.pictureBox_led_status.InitialImage = null;
-            this.pictureBox_led_status.Location = new System.Drawing.Point(294, 29);
+            this.pictureBox_led_status.Location = new System.Drawing.Point(219, 32);
             this.pictureBox_led_status.Margin = new System.Windows.Forms.Padding(12, 3, 3, 12);
             this.pictureBox_led_status.Name = "pictureBox_led_status";
-            this.pictureBox_led_status.Size = new System.Drawing.Size(148, 148);
+            this.pictureBox_led_status.Size = new System.Drawing.Size(223, 74);
             this.pictureBox_led_status.TabIndex = 6;
             this.pictureBox_led_status.TabStop = false;
             // 
             // button_control_state
             // 
             this.button_control_state.Enabled = false;
-            this.button_control_state.Location = new System.Drawing.Point(100, 121);
+            this.button_control_state.Location = new System.Drawing.Point(104, 120);
             this.button_control_state.Name = "button_control_state";
             this.button_control_state.Size = new System.Drawing.Size(92, 34);
             this.button_control_state.TabIndex = 5;
@@ -186,7 +212,7 @@
             // 
             this.label_control.AutoSize = true;
             this.label_control.Font = new System.Drawing.Font("Geist", 14F);
-            this.label_control.Location = new System.Drawing.Point(15, 125);
+            this.label_control.Location = new System.Drawing.Point(16, 124);
             this.label_control.Margin = new System.Windows.Forms.Padding(3, 12, 3, 12);
             this.label_control.Name = "label_control";
             this.label_control.Size = new System.Drawing.Size(79, 24);
@@ -219,7 +245,7 @@
             // 
             this.label_time_value.AutoSize = true;
             this.label_time_value.Font = new System.Drawing.Font("Geist", 14F);
-            this.label_time_value.Location = new System.Drawing.Point(100, 29);
+            this.label_time_value.Location = new System.Drawing.Point(100, 32);
             this.label_time_value.Name = "label_time_value";
             this.label_time_value.Size = new System.Drawing.Size(48, 24);
             this.label_time_value.TabIndex = 1;
@@ -229,7 +255,7 @@
             // 
             this.label_time.AutoSize = true;
             this.label_time.Font = new System.Drawing.Font("Geist", 14F);
-            this.label_time.Location = new System.Drawing.Point(15, 29);
+            this.label_time.Location = new System.Drawing.Point(15, 32);
             this.label_time.Margin = new System.Windows.Forms.Padding(3, 0, 3, 12);
             this.label_time.Name = "label_time";
             this.label_time.Size = new System.Drawing.Size(58, 24);
@@ -248,7 +274,7 @@
             this.Controller.Controls.Add(this.label_yellow);
             this.Controller.Controls.Add(this.textBox_red_value);
             this.Controller.Controls.Add(this.label_red);
-            this.Controller.Location = new System.Drawing.Point(14, 447);
+            this.Controller.Location = new System.Drawing.Point(14, 421);
             this.Controller.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Controller.Name = "Controller";
             this.Controller.Padding = new System.Windows.Forms.Padding(12, 8, 12, 8);
@@ -260,10 +286,10 @@
             // button_mode_3
             // 
             this.button_mode_3.Enabled = false;
-            this.button_mode_3.Location = new System.Drawing.Point(294, 149);
+            this.button_mode_3.Location = new System.Drawing.Point(219, 149);
             this.button_mode_3.Margin = new System.Windows.Forms.Padding(12, 3, 3, 12);
             this.button_mode_3.Name = "button_mode_3";
-            this.button_mode_3.Size = new System.Drawing.Size(148, 40);
+            this.button_mode_3.Size = new System.Drawing.Size(223, 40);
             this.button_mode_3.TabIndex = 9;
             this.button_mode_3.Text = "Mode 3";
             this.button_mode_3.UseVisualStyleBackColor = true;
@@ -272,10 +298,10 @@
             // button_mode_2
             // 
             this.button_mode_2.Enabled = false;
-            this.button_mode_2.Location = new System.Drawing.Point(294, 96);
+            this.button_mode_2.Location = new System.Drawing.Point(219, 96);
             this.button_mode_2.Margin = new System.Windows.Forms.Padding(12, 3, 3, 12);
             this.button_mode_2.Name = "button_mode_2";
-            this.button_mode_2.Size = new System.Drawing.Size(148, 40);
+            this.button_mode_2.Size = new System.Drawing.Size(223, 40);
             this.button_mode_2.TabIndex = 8;
             this.button_mode_2.Text = "Mode 2";
             this.button_mode_2.UseVisualStyleBackColor = true;
@@ -284,10 +310,10 @@
             // button_mode_1
             // 
             this.button_mode_1.Enabled = false;
-            this.button_mode_1.Location = new System.Drawing.Point(294, 41);
+            this.button_mode_1.Location = new System.Drawing.Point(219, 41);
             this.button_mode_1.Margin = new System.Windows.Forms.Padding(12, 3, 3, 12);
             this.button_mode_1.Name = "button_mode_1";
-            this.button_mode_1.Size = new System.Drawing.Size(148, 40);
+            this.button_mode_1.Size = new System.Drawing.Size(223, 40);
             this.button_mode_1.TabIndex = 7;
             this.button_mode_1.Text = "Mode 1";
             this.button_mode_1.UseVisualStyleBackColor = true;
@@ -377,12 +403,12 @@
             // 
             this.label_title.AutoSize = true;
             this.label_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_title.Location = new System.Drawing.Point(49, 25);
+            this.label_title.Location = new System.Drawing.Point(58, 25);
             this.label_title.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_title.Name = "label_title";
-            this.label_title.Size = new System.Drawing.Size(396, 29);
+            this.label_title.Size = new System.Drawing.Size(368, 29);
             this.label_title.TabIndex = 2;
-            this.label_title.Text = "Communication with PIC18F4550";
+            this.label_title.Text = "Communication using Ethernet";
             // 
             // timer
             // 
@@ -392,7 +418,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 661);
+            this.ClientSize = new System.Drawing.Size(484, 635);
             this.Controls.Add(this.groupBox_information);
             this.Controls.Add(this.Controller);
             this.Controls.Add(this.label_title);
@@ -449,5 +475,7 @@
         private System.Windows.Forms.TextBox textBox_IP;
         private System.Windows.Forms.Label label_PORT;
         private System.Windows.Forms.Label label_IP;
+        private System.Windows.Forms.Label label_name;
+        private System.Windows.Forms.Label label_id;
     }
 }
