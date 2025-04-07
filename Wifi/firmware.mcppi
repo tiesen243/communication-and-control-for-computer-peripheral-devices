@@ -43,7 +43,10 @@ Count=0
 [Useses]
 File0=UART
 File1=Button
-Count=2
+File2=Sprintf
+File3=C_Stdlib
+File4=C_Type
+Count=5
 [INTERRUPT_DEFS]
 VECTOR_MODE=0
 IVT_BASE=00000008
@@ -54,8 +57,9 @@ Count=2
 [LIB_EXPANDED_NODES]
 0=mikroE Libraries
 1=System Libraries
-896=UART
-Count=3
+618=Sprintf
+621=Sprinti
+Count=4
 [PROGRAMMER_TYPE]
 Value=mikroE mikroProg
 [CODEGRIP_OPTIONS]

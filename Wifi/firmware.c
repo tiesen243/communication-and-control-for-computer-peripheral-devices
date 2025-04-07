@@ -1,3 +1,8 @@
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
 /*
  * Button at PORTB0, PORTB1, PORTB2
  * - PORTB0: Mode 1
@@ -11,10 +16,11 @@
 const int BUTTONS[3] = {0b00000001, 0b00000010, 0b00000100};
 const int LEDS[3] = {0b00001000, 0b00010000, 0b00100000};
 const int OFF = 0b00000000;
+const int PORT = 9600;
 
 const char SEND_MSGS[11] = {'1', '2', '3', 'M', 'A', 'R',
                             'O', 'Y', 'G', 'E', 'S'};
-const char RECEIVE_MSGS[5] = {'T', 'D', 'N', 'I', 'S'};
+const char RECEIVE_MSGS[6] = {'T', 'D', 'N', 'I', 'S', 'Z'};
 int durations[4] = {5, 3, 10, 1}; /* Red, yellow, green, blink yellow */
 
 /* Mode
@@ -51,12 +57,7 @@ int control_mode = 0;
 #define ESP8266_UNLINK 6
 #define ESP8266_CONNECT 7
 
-char received_data;
-
-void setup_communication() {
-  UART1_Init(PORT);
-  Delay_ms(100);
-}
+char received_data, receive_flag = 0;
 
 char _esp8266_getch() {
   if (OERR_bit) {
@@ -74,10 +75,168 @@ void _esp8266_putch(char c) {
   TXREG = c;
 }
 
-void _esp8266_print(unsigned char *ptr) {
-  while (*ptr) {
-    _esp8266_putch(*ptr++);
+void ESP8266_send_string(char *str) {
+  while (*str) {
+    _esp8266_putch(*str++);
   }
+}
+
+void _esp8266_print(unsigned char *str) {
+  while (*str != 0) {
+    _esp8266_putch(*str++);
+  }
+}
+
+int _esp8266_waitFor(unsigned char *str) {
+  unsigned char so_far = 0;
+  unsigned char received;
+  uint16_t counter = 0;
+
+  do {
+    received = _esp8266_getch();
+    counter++;
+
+    if (received == str[so_far]) {
+      so_far++;
+    } else {
+      so_far = 0;
+    }
+  } while (str[so_far] != 0);
+
+  return counter;
+}
+
+void esp8266_restart() {
+  _esp8266_print("AT+RST\r\n");
+  _esp8266_waitFor("OK");
+  _esp8266_waitFor("ready");
+}
+
+void esp8266_isStarted() {
+  _esp8266_print("AT\r\n");
+  _esp8266_waitFor("OK");
+}
+
+void esp8266_echoCMD(bool echo) {
+  _esp8266_print("ATE");
+
+  if (echo)
+    _esp8266_putch('1');
+  else
+    _esp8266_putch('0');
+
+  _esp8266_print("\r\n");
+  _esp8266_waitFor("OK");
+}
+
+void esp8266_mode(unsigned char mode) {
+  _esp8266_print("AT+CWMODE=");
+  _esp8266_putch(mode + '0');
+  _esp8266_print("\r\n");
+  _esp8266_waitFor("OK");
+}
+
+void esp8266_trans_mode(unsigned char mode) {
+  _esp8266_print("AT+CIPMODE=");
+  _esp8266_putch(mode + '0');
+  _esp8266_print("\r\n");
+  _esp8266_waitFor("OK");
+}
+
+void esp8266_connect(unsigned char *ssid, unsigned char *password) {
+  _esp8266_print("AT+CWJAP=\"");
+  _esp8266_print(ssid);
+  _esp8266_print("\",\"");
+  _esp8266_print(password);
+  _esp8266_print("\"\r\n");
+  _esp8266_waitFor("OK");
+}
+
+void esp8266_start(unsigned char protocol, unsigned char *ip,
+                   unsigned int port) {
+  unsigned char port_str[5] = "\0\0\0\0";
+  _esp8266_print("AT+CIPSTART=\"");
+  if (protocol == ESP8266_TCP)
+    _esp8266_print("TCP");
+  else
+    _esp8266_print("UDP");
+
+  _esp8266_print("\",\"");
+  _esp8266_print(ip);
+  _esp8266_print("\",");
+  sprintf(port_str, "%u", port);
+  _esp8266_print(port_str);
+  _esp8266_print("\r\n");
+  _esp8266_waitFor("OK");
+}
+
+void esp8266_send(void) {
+  _esp8266_print("AT+CIPSEND\r\n");
+  _esp8266_print("\r\n");
+  _esp8266_waitFor("OK");
+  while (_esp8266_getch() != '>')
+    ;
+}
+
+void esp8266_receive(unsigned char *stored) {
+  unsigned char length = 0;
+  unsigned char i;
+  unsigned char received;
+
+  _esp8266_waitFor("+IPD,");
+  do {
+    received = _esp8266_getch();
+    if (received == ':')
+      break;
+    length = length * 10 + (received - '0');
+  } while (received >= '0' && received <= '9');
+
+  for (i = 0; i < length; i++) {
+    stored[i] = _esp8266_getch();
+  }
+}
+
+void esp8266_disconnect() {
+  _esp8266_print("AT+CWQAP\r\n");
+  _esp8266_waitFor("OK");
+}
+
+void esp8266_stop_send() {
+  _esp8266_print("+++");
+  delay_ms(2000);
+}
+
+void esp8266_del_TCP() {
+  _esp8266_print("AT+CIPCLOSE\r\n");
+  _esp8266_waitFor("OK");
+}
+
+void setup_communication() {
+  UART1_Init(PORT);
+  RC0_bit = 0;
+  delay_ms(100);
+  RC0_bit = 1;
+  Delay_ms(1000);
+
+  esp8266_restart();
+  esp8266_echoCMD(0);
+  esp8266_isStarted();
+  esp8266_mode(ESP8266_STATION);
+  esp8266_connect("IOT_AI_LAB", "rC7YNUqM");
+  esp8266_start(ESP8266_TCP, "192.168.1.69", 3000);
+
+  PORTE = 0x00;
+  TRISE = 0x00;
+  RE0_bit = 1;
+
+  esp8266_trans_mode(ESP8266_TRANS_PASS);
+  esp8266_send();
+
+  RCIF_bit = 0;
+  PIE1.RCIE = 1;
+
+  GIE_bit = 1;
+  PEIE_bit = 1;
 }
 
 void send_msg(int index) {
@@ -88,16 +247,27 @@ void send_msg(int index) {
   Delay_ms(100);
 }
 
-char receive_msg() { return received_data; }
+char receive_msg() {
+  if (receive_flag == 1) {
+    receive_flag = 0;
+    return received_data;
+  }
+
+  return 0;
+}
 
 void set_time() {
   int i;
   char time[7];
 
   for (i = 0; i < 6; i++) {
-    while (!UART1_Data_Ready())
-      ;
-    time[i] = UART1_Read();
+    while (1) {
+      char msg = receive_msg();
+      if (msg) {
+        time[i] = msg;
+        break;
+      }
+    }
 
     if (time[i] == 'S')
       i = -1;
@@ -213,6 +383,12 @@ void delay(int delay_s) {
         PORTB = OFF;
         return;
       }
+    } else if (msg == RECEIVE_MSGS[5]) {
+      GIE_bit = 0;
+      RE0_bit = 0;
+      esp8266_stop_send();
+      esp8266_trans_mode(ESP8266_TRANS_NOR);
+      esp8266_del_TCP();
     } else if (control_mode == 1) {
       int newMode = msg - '0';
       if (newMode >= 1 && newMode <= 3) {
