@@ -34,7 +34,7 @@ namespace software
         private Mode timeMode = Mode.Day;
 
         private readonly char[] RECEIVE_MSGS = { 'M', 'A', 'R', 'O', 'Y', 'G', 'E', 'S' };
-        private readonly char[] SEND_MSGS = { 'T', 'D', 'N', 'I', 'S' };
+        private readonly char[] SEND_MSGS = { 'T', 'D', 'N', 'I', 'S', 'Z' };
 
         public Software()
         {
@@ -94,6 +94,8 @@ namespace software
             {
                 if (isConnected)
                 {
+                    sendMsg(SEND_MSGS[3]);
+
                     server.Close();
                     client.Close();
 
