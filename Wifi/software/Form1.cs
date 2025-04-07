@@ -211,6 +211,7 @@ namespace software
             {
                 MessageBox.Show("Connection lost", "Error", MessageBoxButtons.OK);
 
+                server.Close();
                 client.Close();
 
                 button_connect.Text = "Connect";
