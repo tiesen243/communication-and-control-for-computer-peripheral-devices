@@ -61,6 +61,7 @@ Debug
 *.dbg
 *.dct
 *.dlt
+*.hex
 *.lst
 *.dic
 *_callertable.txt
