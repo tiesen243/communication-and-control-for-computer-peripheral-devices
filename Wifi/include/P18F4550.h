@@ -1,9 +1,3 @@
-/*
- * File:    P18F4550.h
- * Purpose: Standard C header version of PIC18F4550 register definitions
- * Target:  PIC18F4550
- */
-
 #ifndef _P18F4550_H_
 #define _P18F4550_H_
 
