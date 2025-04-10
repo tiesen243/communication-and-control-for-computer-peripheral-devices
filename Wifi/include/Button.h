@@ -1,5 +1,5 @@
-#ifndef _BUTTON_H_
-#define _BUTTON_H_
+#ifndef BUTTON_H_
+#define BUTTON_H_
 
 #include <stdint.h>
 
@@ -14,4 +14,4 @@ unsigned short Button(volatile uint8_t *port, unsigned short pin,
 }
 #endif
 
-#endif // _BUTTON_H_
+#endif // BUTTON_H_

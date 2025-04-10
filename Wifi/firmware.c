@@ -1,8 +1,9 @@
 #include <stdbool.h>
 
-// #include "include/Button.h"
-// #include "include/P18F4550.h"
-// #include "include/UART.h"
+#include "include/Button.h"
+#include "include/ESP8266.h"
+#include "include/P18F4550.h"
+//#include "include/UART.h"
 
 /*
  * DEFINITIONS
