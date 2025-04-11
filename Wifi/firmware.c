@@ -87,7 +87,12 @@ void delay(int delay_s) {
   for (i = 0; i < delay_s * 10; i++) {
     /* UART handler */
     char msg = read_data();
-    if (msg == 'T') {
+    if (msg == 'I') {
+      send_data(mode);
+      Delay_ms(100);
+      send_data(controlMode ? 'A' : 'M');
+      Delay_ms(100);
+    } else if (msg == 'T') {
       controlMode = 1 - controlMode;
       send_data(controlMode ? 'A' : 'M');
     } else if (msg == 'D' || msg == 'N') {
@@ -131,6 +136,10 @@ void delay(int delay_s) {
         send_data('0' + mode);
         return;
       }
+    } else if (msg == 'Z') {
+      esp8266_stop();
+      esp8266_trans_mode(ESP8266_TRANS_NOR);
+      esp8266_close();
     }
 
     /* Button handler */
