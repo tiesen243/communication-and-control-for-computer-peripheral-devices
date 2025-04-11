@@ -6,7 +6,7 @@ Value=0
 [BUILD_TYPE]
 Value=0
 [ACTIVE_TAB]
-Value=include\ESP8266.c
+Value=firmware.c
 [USE_EEPROM]
 Value=0
 [USE_HEAP]
@@ -26,9 +26,7 @@ Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
 File0=firmware.c
-File1=.\include\ESP8266.c
-File2=.\include\ESP8266.h
-Count=3
+Count=1
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]
