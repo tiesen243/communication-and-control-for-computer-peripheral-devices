@@ -43,9 +43,9 @@ void setup_communication() {
   esp8266_echoCmds(false);
   esp8266_isStarted();
   esp8266_mode(ESP8266_STATION);
-  esp8266_connect((unsigned char *)"Phat Tien", (unsigned char *)"tt@20042007");
+  esp8266_connect((unsigned char *)"Tiesen", (unsigned char *)"24032206");
   esp8266_ip();
-  esp8266_start(ESP8266_TCP, (unsigned char *)"192.168.1.3", 3000);
+  esp8266_start(ESP8266_TCP, (unsigned char *)"192.168.235.142", 3000);
   esp8266_trans_mode(ESP8266_TRANS_PASS);
   esp8266_send();
 }
