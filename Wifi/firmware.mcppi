@@ -6,7 +6,7 @@ Value=0
 [BUILD_TYPE]
 Value=0
 [ACTIVE_TAB]
-Value=firmware.c
+Value=include\ESP8266.h
 [USE_EEPROM]
 Value=0
 [USE_HEAP]
@@ -26,7 +26,9 @@ Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
 File0=firmware.c
-Count=1
+File1=.\include\ESP8266.c
+File2=.\include\ESP8266.h
+Count=3
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]
@@ -55,13 +57,14 @@ IVT_BASE=00000008
 [EXPANDED_NODES]
 0=firmware.mcppi
 1=Sources
-4=Header Files
-Count=3
+5=Header Files
+6=include
+Count=4
 [LIB_EXPANDED_NODES]
 0=mikroE Libraries
 1=System Libraries
 7=Button
-Count=3
+Count=4
 [PROGRAMMER_TYPE]
 Value=mikroE mikroProg
 [CODEGRIP_OPTIONS]

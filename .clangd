@@ -1,7 +1,0 @@
-CompileFlags:
-  Add: [
-    "--background-index"
-  ]
-  Remove: [
-  ]
-Diagnostics:
