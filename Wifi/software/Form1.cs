@@ -94,8 +94,8 @@ namespace software
             {
                 if (isConnected)
                 {
-                    sendMsg(SEND_MSGS[3]);
-
+                    sendMsg(SEND_MSGS[5]);
+                    System.Threading.Thread.Sleep(1000);
                     server.Close();
                     client.Close();
 
@@ -166,6 +166,8 @@ namespace software
                 t.Start();
 
                 toggle(true);
+
+                System.Threading.Thread.Sleep(1000);
                 sendMsg(SEND_MSGS[3]);
             }
             catch (System.Exception)
@@ -197,9 +199,7 @@ namespace software
             try
             {
                 byte[] data = Encoding.ASCII.GetBytes(msg.ToString());
-                //client.Send(data, data.Length, SocketFlags.None);
                 client.SendTo(data, data.Length, SocketFlags.None, client.RemoteEndPoint);
-                //MessageBox.Show("Message sent: " + msg, "Success", MessageBoxButtons.OK);
             }
             catch (Exception ex)
             {
