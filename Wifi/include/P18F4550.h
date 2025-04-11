@@ -35,6 +35,17 @@
 #define INTCON2 (*((volatile uint8_t *)0xFF1))
 #define INTCON3 (*((volatile uint8_t *)0xFF0))
 
+#define PIR1 (*((volatile uint8_t *)0x0F9E))
+#define RCSTA (*((volatile uint8_t *)0x0FAB))
+#define TXREG (*((volatile uint8_t *)0x0FAD))
+#define RCREG (*((volatile uint8_t *)0x0FAE))
+
+#define RCIE_bit (INTCON & 0x20)
+#define RCIF_bit (INTCON & 0x10)
+#define TXIF_bit (INTCON & 0x08)
+#define OERR_bit (RCSTA & 0x02)
+#define CREN_bit (RCSTA & 0x01)
+
 void Delay_ms(uint16_t milliseconds);
 
 #endif // _P18F4550_H_

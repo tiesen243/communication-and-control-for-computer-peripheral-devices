@@ -1,5 +1,5 @@
-#ifndef UART_H_
-#define UART_H_
+#ifndef UARTx_H_
+#define UARTx_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -26,4 +26,4 @@ void UART1_Write_Text(char *UART_text);
 }
 #endif
 
-#endif // UART_H_
+#endif // UARTx_H_
