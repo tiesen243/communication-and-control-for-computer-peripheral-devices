@@ -88,7 +88,7 @@ void delay(int delay_s) {
     /* UART handler */
     char msg = read_data();
     if (msg == 'I') {
-      send_data(mode);
+      send_data('0' + mode);
       Delay_ms(100);
       send_data(controlMode ? 'A' : 'M');
       Delay_ms(100);
