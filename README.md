@@ -53,36 +53,6 @@ communication-and-control-for-computer-peripheral-devices/
 3. Build and run the GUI.
 4. Select the communication method and COM port or IP.
 
-## 🧪 Example
-
-### mikroC: Bluetooth Echo
-
-```c
-void main() {
-	UART1_Init(9600);
-	Delay_ms(100);
-
-	while (1) {
-		if (UART1_Data_Ready()) {
-			char received = UART1_Read();
-			UART1_Write_Text("You sent: ");
-			UART1_Write(received);
-			UART1_Write_Text("\r\n");
-		}
-	}
-}
-```
-
-### C#: COM Communication
-
-```csharp
-SerialPort port = new SerialPort("COM3", 9600);
-port.Open();
-port.Write("A");
-string response = port.ReadLine();
-MessageBox.Show("Received: " + response);
-```
-
 ## 📜 License
 
 Licensed under the [MIT License](LICENSE).
