@@ -4,8 +4,6 @@ This project demonstrates how to communicate with and control peripheral devices
 
 Firmware is developed using **mikroC PRO for PIC**.
 
----
-
 ## 📦 Project Structure
 
 ```text
@@ -20,8 +18,6 @@ communication-and-control-for-computer-peripheral-devices/
 ├── Bai_tap_ve_nha_Ver8.pdf  # Documentation and exercises (Vietnamese)
 └── LICENSE                  # MIT License
 ```
-
----
 
 ## 🛠 Tools Used
 
@@ -42,8 +38,6 @@ communication-and-control-for-computer-peripheral-devices/
 	- `System.IO.Ports` for Serial COM
 	- `System.Net.Sockets` for TCP/IP
 
----
-
 ## 🚀 Getting Started
 
 ### 🔧 mikroC Firmware
@@ -58,8 +52,6 @@ communication-and-control-for-computer-peripheral-devices/
 2. Open the `.sln` file in Visual Studio.
 3. Build and run the GUI.
 4. Select the communication method and COM port or IP.
-
----
 
 ## 🧪 Example
 
