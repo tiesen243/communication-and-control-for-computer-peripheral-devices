@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -56,6 +57,10 @@ namespace software
             StyleInput(textBox_green_value);
             StyleInput(textBox_IP);
             StyleInput(textBox_PORT);
+
+            richTextBox_log.BorderStyle = BorderStyle.None;
+            richTextBox_log.BackColor = backgroundColor;
+            richTextBox_log.ForeColor = foregroundColor;
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -114,10 +119,7 @@ namespace software
                 }
                 else
                 {
-                    Thread t = new Thread(Endpoint_Thread)
-                    {
-                        IsBackground = true
-                    };
+                    Thread t = new Thread(Endpoint_Thread) { IsBackground = true };
                     t.Start();
 
                     button_connect.Text = "Disconnect";
@@ -159,10 +161,7 @@ namespace software
                 button_connect.Enabled = true;
                 isConnected = true;
 
-                Thread t = new Thread(Receive_Thread)
-                {
-                    IsBackground = true
-                };
+                Thread t = new Thread(Receive_Thread) { IsBackground = true };
                 t.Start();
 
                 toggle(true);
@@ -200,6 +199,7 @@ namespace software
             {
                 byte[] data = Encoding.ASCII.GetBytes(msg.ToString());
                 client.SendTo(data, data.Length, SocketFlags.None, client.RemoteEndPoint);
+                Log(msg.ToString(), "send");
             }
             catch (Exception ex)
             {
@@ -216,13 +216,14 @@ namespace software
                     byte[] data_received = new byte[1];
                     int temp = client.Receive(data_received);
                     string data = Encoding.ASCII.GetString(data_received, 0, temp);
+                    Log(data, "receive");
 
                     handleReceivedData(data);
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                MessageBox.Show("Connection lost", "Error", MessageBoxButtons.OK);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
 
                 client.Close();
 
@@ -311,12 +312,12 @@ namespace software
                 return;
             }
 
-            byte[] data = Encoding.ASCII.GetBytes(
-                SEND_MSGS[4].ToString() + redTime + yellowTime + greenTime
-            );
+            string msg = SEND_MSGS[4].ToString() + redTime + yellowTime + greenTime;
+            byte[] data = Encoding.ASCII.GetBytes(msg);
             client.SendTo(data, data.Length, SocketFlags.None, client.RemoteEndPoint);
             System.Threading.Thread.Sleep(200);
             client.SendTo(data, data.Length, SocketFlags.None, client.RemoteEndPoint);
+            Log(msg, "send");
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -385,6 +386,32 @@ namespace software
                     textBox.Text = "10";
                     MessageBox.Show("Maximum value is 10", "Error", MessageBoxButtons.OK);
                 }
+            }
+        }
+
+        private void Log(string message, string type)
+        {
+            if (richTextBox_log.InvokeRequired)
+            {
+                richTextBox_log.Invoke(new Action(() => Log(message, type)));
+            }
+            else
+            {
+                string timestamp = DateTime.Now.ToString("HH:mm:ss");
+                string tag = type == "send" ? "[Sender]  " : "[Receiver]";
+                string prefix = $"{timestamp} - {tag} -";
+                string fullMessage = $"{prefix} {message}";
+
+                int start = richTextBox_log.TextLength;
+                richTextBox_log.AppendText($"{fullMessage} {Environment.NewLine}");
+
+                Color color = type == "send" ? waitingColor : connectedColor;
+                richTextBox_log.Select(start, fullMessage.Length);
+                richTextBox_log.SelectionColor = color;
+
+                richTextBox_log.SelectionStart = richTextBox_log.TextLength;
+                richTextBox_log.SelectionLength = 0;
+                richTextBox_log.ScrollToCaret();
             }
         }
 
