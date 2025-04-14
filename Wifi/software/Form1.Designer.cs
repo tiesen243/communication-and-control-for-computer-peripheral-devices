@@ -423,6 +423,7 @@
             this.richTextBox_log.Location = new System.Drawing.Point(15, 27);
             this.richTextBox_log.Margin = new System.Windows.Forms.Padding(12, 3, 3, 12);
             this.richTextBox_log.Name = "richTextBox_log";
+            this.richTextBox_log.ReadOnly = true;
             this.richTextBox_log.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.richTextBox_log.Size = new System.Drawing.Size(427, 100);
             this.richTextBox_log.TabIndex = 10;
