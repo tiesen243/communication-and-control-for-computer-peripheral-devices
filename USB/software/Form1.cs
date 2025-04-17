@@ -24,10 +24,6 @@ namespace software
         private ControlSource controlSource = ControlSource.Manual;
         private DayNightMode timeMode = DayNightMode.Day;
 
-        private readonly char[] RECEIVE_MSGS = { 'M', 'A', 'R', 'O', 'Y', 'G', 'E', 'S' };
-        private readonly char[] SEND_MSGS = { 'T', 'D', 'N', 'I', 'S' };
-
-        byte[] readbuff = new byte[8];
         byte[] writebuff = new byte[8];
 
         public Software()
@@ -85,7 +81,7 @@ namespace software
 
             toggle(true);
 
-            sendMsg(SEND_MSGS[3]);
+            sendMsg('I');
         }
 
         private void usbHidPort_OnSpecifiedDeviceRemoved(object sender, EventArgs e)
@@ -167,7 +163,7 @@ namespace software
 
         private void button_control_state_Click(object sender, EventArgs e)
         {
-            sendMsg(SEND_MSGS[0]);
+            sendMsg('T');
         }
 
         private void button_mode_Click(object sender, EventArgs e)
@@ -179,29 +175,30 @@ namespace software
 
         private void handleReceivedData(string data)
         {
-            if (data == RECEIVE_MSGS[0].ToString())
+            if (data == "M")
             {
                 button_control_state.Text = "Manual";
                 controlSource = ControlSource.Manual;
                 toggle(true);
             }
-            else if (data == RECEIVE_MSGS[1].ToString())
+            else if (data == "A")
             {
                 button_control_state.Text = "Auto";
                 controlSource = ControlSource.Auto;
                 toggle(true);
             }
-            else if (data == RECEIVE_MSGS[2].ToString())
+            else if (data == "R")
                 pictureBox_led_status.Image = Properties.Resources.red;
-            else if (data == RECEIVE_MSGS[3].ToString())
-                pictureBox_led_status.Image = Properties.Resources.off;
-            else if (data == RECEIVE_MSGS[4].ToString())
+
+            else if (data == "Y")
                 pictureBox_led_status.Image = Properties.Resources.yellow;
-            else if (data == RECEIVE_MSGS[5].ToString())
+            else if (data == "G")
                 pictureBox_led_status.Image = Properties.Resources.green;
-            else if (data == RECEIVE_MSGS[6].ToString())
+            else if (data == "O")
+                pictureBox_led_status.Image = Properties.Resources.off;
+            else if (data == "E")
                 MessageBox.Show("Time saved failed", "Error", MessageBoxButtons.OK);
-            else if (data == RECEIVE_MSGS[7].ToString())
+            else if (data == "S")
                 MessageBox.Show("Time saved successfully", "Success", MessageBoxButtons.OK);
             else if (data.Length == 1 && data[0] >= '1' && data[0] <= '3')
                 label_mode_value.Text = data;
@@ -235,7 +232,7 @@ namespace software
             writebuff = new byte[8]
             {
                 0x00,
-                (byte)SEND_MSGS[4],
+                (byte)'S',
                 (byte)redTime[0],
                 (byte)redTime[1],
                 (byte)yellowTime[0],
@@ -255,12 +252,12 @@ namespace software
             if ((current.Hour >= 23 || current.Hour < 5) && timeMode != DayNightMode.Night)
             {
                 timeMode = DayNightMode.Night;
-                sendMsg(SEND_MSGS[2]);
+                sendMsg('N');
             }
             else if ((current.Hour >= 5 && current.Hour < 23) && timeMode != DayNightMode.Day)
             {
                 timeMode = DayNightMode.Day;
-                sendMsg(SEND_MSGS[1]);
+                sendMsg('D');
             }
         }
 

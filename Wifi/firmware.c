@@ -42,9 +42,9 @@ void setup_communication() {
   esp8266_echoCmds(false);
   esp8266_isStarted();
   esp8266_mode(ESP8266_STATION);
-  esp8266_connect("Giao_tiep_ngoai_vi", "pqtri2002");
+  esp8266_connect("SSID", "PASSWORD");
   esp8266_ip();
-  esp8266_start(ESP8266_TCP, "192.168.0.135", 3000);
+  esp8266_start(ESP8266_TCP, "IP_ADDRESS", 3000);
   esp8266_trans_mode(ESP8266_TRANS_PASS);
   esp8266_send();
 }

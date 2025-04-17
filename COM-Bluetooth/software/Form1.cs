@@ -14,9 +14,6 @@ namespace software
 
     public enum Mode
     {
-        Mode1,
-        Mode2,
-        Mode3,
         Night,
         Day,
     }
@@ -26,11 +23,7 @@ namespace software
         #region Initialization
 
         private ControlSource controlSource = ControlSource.Manual;
-        private Mode mode = Mode.Mode1;
         private Mode timeMode = Mode.Day;
-
-        private readonly char[] RECEIVE_MSGS = { 'M', 'A', 'R', 'O', 'Y', 'G', 'E', 'S' };
-        private readonly char[] SEND_MSGS = { 'T', 'D', 'N', 'I', 'S' };
 
         public Software()
         {
@@ -125,7 +118,7 @@ namespace software
 
                     toggle(true);
 
-                    sendMsg(SEND_MSGS[3]);
+                    sendMsg("I");
                 }
             }
             catch (Exception ex)
@@ -139,11 +132,11 @@ namespace software
 
         #region Communication
 
-        private void sendMsg(char msg)
+        private void sendMsg(string msg)
         {
             try
             {
-                serialPort.Write(msg.ToString());
+                serialPort.Write(msg);
             }
             catch (Exception ex)
             {
@@ -171,41 +164,41 @@ namespace software
 
         private void button_control_state_Click(object sender, EventArgs e)
         {
-            sendMsg(SEND_MSGS[0]);
+            sendMsg("T");
         }
 
         private void button_mode_Click(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
             string mode = btn.Text;
-            sendMsg(mode.Substring(mode.Length - 1)[0]);
+            sendMsg(mode.Substring(mode.Length - 1)[0].ToString());
         }
 
         private void handleReceivedData(string data)
         {
-            if (data == RECEIVE_MSGS[0].ToString())
+            if (data == "M")
             {
                 button_control_state.Text = "Manual";
                 controlSource = ControlSource.Manual;
                 toggle(true);
             }
-            else if (data == RECEIVE_MSGS[1].ToString())
+            else if (data == "A")
             {
                 button_control_state.Text = "Auto";
                 controlSource = ControlSource.Auto;
                 toggle(true);
             }
-            else if (data == RECEIVE_MSGS[2].ToString())
+            else if (data == "R")
                 pictureBox_led_status.Image = Properties.Resources.red;
-            else if (data == RECEIVE_MSGS[3].ToString())
-                pictureBox_led_status.Image = Properties.Resources.off;
-            else if (data == RECEIVE_MSGS[4].ToString())
+            else if (data == "Y")
                 pictureBox_led_status.Image = Properties.Resources.yellow;
-            else if (data == RECEIVE_MSGS[5].ToString())
+            else if (data == "G")
                 pictureBox_led_status.Image = Properties.Resources.green;
-            else if (data == RECEIVE_MSGS[6].ToString())
+            else if (data == "O")
+                pictureBox_led_status.Image = Properties.Resources.off;
+            else if (data == "E")
                 MessageBox.Show("Time saved failed", "Error", MessageBoxButtons.OK);
-            else if (data == RECEIVE_MSGS[7].ToString())
+            else if (data == "S")
                 MessageBox.Show("Time saved successfully", "Success", MessageBoxButtons.OK);
             else if (data.Length == 1 && data[0] >= '1' && data[0] <= '3')
                 label_mode_value.Text = data;
@@ -236,9 +229,9 @@ namespace software
                 return;
             }
 
-            serialPort.Write(SEND_MSGS[4].ToString() + redTime + yellowTime + greenTime);
+            serialPort.Write("S" + redTime + yellowTime + greenTime);
             System.Threading.Thread.Sleep(200);
-            serialPort.Write(SEND_MSGS[4].ToString() + redTime + yellowTime + greenTime);
+            serialPort.Write("S" + redTime + yellowTime + greenTime);
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -253,12 +246,12 @@ namespace software
             if ((current.Hour >= 23 || current.Hour < 5) && timeMode != Mode.Night)
             {
                 timeMode = Mode.Night;
-                sendMsg(SEND_MSGS[2]);
+                sendMsg("N");
             }
             else if ((current.Hour >= 5 && current.Hour < 23) && timeMode != Mode.Day)
             {
                 timeMode = Mode.Day;
-                sendMsg(SEND_MSGS[1]);
+                sendMsg("D");
             }
         }
 
