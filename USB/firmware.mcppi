@@ -6,7 +6,7 @@ Value=0
 [BUILD_TYPE]
 Value=0
 [ACTIVE_TAB]
-Value=USBdsc.c
+Value=firmware.c
 [USE_EEPROM]
 Value=0
 [USE_HEAP]
@@ -56,6 +56,7 @@ Count=2
 [LIB_EXPANDED_NODES]
 0=mikroE Libraries
 1=System Libraries
+914=USB
 Count=3
 [PROGRAMMER_TYPE]
 Value=mikroE mikroProg

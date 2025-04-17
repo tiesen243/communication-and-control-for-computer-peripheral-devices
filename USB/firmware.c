@@ -1,43 +1,48 @@
+#include <stdbool.h>
+
 /*
- * Button at PORTB0, PORTB1, PORTB2
- * - PORTB0: Mode 1
- * - PORTB1: Mode 2
- * - PORTB2: Mode 3
- * LED at PORTB3, PORTB4, PORTB5
- * - PORTB3: Led red
- * - PORTB4: Led yellow
- * - PORTB5: Led green
+ * DEFINITIONS
  */
-const int BUTTONS[3] = {0b00000001, 0b00000010, 0b00000100};
-const int LEDS[3] = {0b00001000, 0b00010000, 0b00100000};
-const int OFF = 0b00000000;
 
-const char SEND_MSGS[11] = {'1', '2', '3', 'M', 'A', 'R',
-                            'O', 'Y', 'G', 'E', 'S'};
-const char RECEIVE_MSGS[5] = {'T', 'D', 'N', 'I', 'S'};
-int durations[4] = {5, 3, 10, 1}; /* Red, yellow, green, blink yellow */
+enum LedState {
+  LED_RED = 0x08,
+  LED_YELLOW = 0x10,
+  LED_GREEN = 0x20,
+  LED_OFF = 0x00,
+};
 
-/* Mode
- * - 1: Ony red led
- * - 2: Blink yellow led 1s
- * - 3:
- *   + Day mode: 5s red -> 3s yellow -> 10s green -> loop
- *   + Night mode: blink yellow led 1s
+enum Mode {
+  MODE_1 = 1,
+  MODE_2 = 2,
+  MODE_3 = 3,
+};
+
+enum ControlMode {
+  MANUAL_MODE = 0,
+  AUTO_MODE = 1,
+};
+
+int durations[4] = {5, 3, 10, 1};
+int mode = MODE_3;
+int is_night_mode = false;
+int controlMode = MANUAL_MODE;
+
+/*
+ * COMMUNICATION
+ * - ESP8266
+ * - UART
  */
-int mode = 3;
-int is_night_mode = 0;
-
-/* Control mode
- * - 0: Manual mode
- * - 1: Auto mode
- */
-int control_mode = 0;
-
-/* Communication */
 #define inp_size 7
 #define out_size 7
 unsigned char readbuff[inp_size] absolute 0x500;
 unsigned char writebuff[out_size] absolute 0x540;
+
+void interrupt(void) {
+  if (USBIF_bit == 1) {
+    USBIF_bit = 0;
+    USB_Interrupt_Proc();
+  }
+}
 
 void setup_communication() {
   UPUEN_bit = 1;
@@ -53,148 +58,135 @@ void setup_communication() {
   Delay_ms(100);
 }
 
-void send_msg(int index) {
-  writebuff[0] = SEND_MSGS[index];
-  HID_Write(&writebuff, out_size);
-  Delay_ms(100);
-}
-
-char receive_msg() {
+char read_data() {
   if (HID_Read() != 0)
     return readbuff[0];
   return 0;
 }
 
-void set_time() {
-  int i;
-  char time[7];
-
-  for (i = 0; i < 7; i++)
-    time[i] = readbuff[i + 1];
-
-  for (i = 0; i < 6; i++)
-    if (time[i] < '0' || time[i] > '9')
-      return;
-
-  durations[0] = (time[0] - '0') * 10 + (time[1] - '0');
-  durations[1] = (time[2] - '0') * 10 + (time[3] - '0');
-  durations[2] = (time[4] - '0') * 10 + (time[5] - '0');
-  send_msg(10);
+void send_data(char _data) {
+  writebuff[0] = _data;
+  HID_Write(&writebuff, out_size);
+  Delay_ms(100);
 }
 
-void interrupt(void) {
-  if (USBIF_bit == 1) {
-    USBIF_bit = 0;
-    USB_Interrupt_Proc();
-  }
-}
-
-/* Main */
-
-void delay(int duration);
+/*
+ * MAIN
+ * - SETUP: Initialize peripherals
+ * - LOOP: Main loop
+ * - DELAY: Delay function with UART and button handler
+ */
 
 void setup() {
   ADCON1 |= 0x0F;
   CMCON |= 0X07;
 
-  TRISB = 0b00000111;
-  PORTB = OFF;
+  TRISB = 0x07;
+  PORTB = LED_OFF;
 
   setup_communication();
 }
 
-void loop() {
-  if (mode == 1) {
-    PORTB = LEDS[0];
-    send_msg(5);
-    delay(durations[0]);
-  } else if (mode == 2 || (mode == 3 && is_night_mode)) {
-    PORTB ^= LEDS[1];
-    send_msg((PORTB & 0x38) == LEDS[1] ? 7 : 6);
-    delay(durations[3]);
-  } else if (mode == 3) {
-    if ((PORTB & 0x38) == LEDS[0]) {
-      PORTB = LEDS[1];
-      send_msg(7);
-      delay(durations[1]);
-    } else if ((PORTB & 0x38) == LEDS[1]) {
-      PORTB = LEDS[2];
-      send_msg(8);
-      delay(durations[2]);
-    } else {
-      PORTB = LEDS[0];
-      send_msg(5);
-      delay(durations[0]);
-    }
-  }
-}
-
-void main() {
-  setup();
-  while (1)
-    loop();
-}
-
-int switch_mode(int newMode) {
-  if (mode == newMode)
-    return 0;
-
-  PORTB = OFF;
-  mode = newMode;
-  send_msg(newMode - 1);
-  return 1;
-}
-
 void delay(int delay_s) {
   int i, j;
-
   for (i = 0; i < delay_s * 10; i++) {
-
-    // Check receive message
-    char msg = receive_msg();
-    if (msg == RECEIVE_MSGS[0]) {
-      control_mode = 1 - control_mode;
-      send_msg(control_mode + 3);
-    } else if (msg == RECEIVE_MSGS[1]) {
-      is_night_mode = 0;
-      if (mode == 3) {
-        PORTB = OFF;
-        return;
-      }
-    } else if (msg == RECEIVE_MSGS[2]) {
-      is_night_mode = 1;
-      if (mode == 3) {
-        PORTB = OFF;
-        return;
-      }
-    } else if (msg == RECEIVE_MSGS[3]) {
-      send_msg(mode - 1);
+    /* UART handler */
+    char msg = read_data();
+    if (msg == 'I') {
+      send_data('0' + mode);
       Delay_ms(100);
-      send_msg(control_mode + 3);
-    } else if (msg == RECEIVE_MSGS[4]) {
-      set_time();
-
-      if (mode == 3) {
-        PORTB = OFF;
+      send_data(controlMode ? 'A' : 'M');
+      Delay_ms(100);
+    } else if (msg == 'T') {
+      controlMode = 1 - controlMode;
+      send_data(controlMode ? 'A' : 'M');
+    } else if (msg == 'D' || msg == 'N') {
+      is_night_mode = (msg == 'N');
+      if (mode == MODE_3) {
+        PORTB = LED_OFF;
         return;
       }
-    } else if (control_mode == 1) {
-      int newMode = msg - '0';
-      if (newMode >= 1 && newMode <= 3) {
-        if (switch_mode(newMode))
+    } else if (msg == 'S') {
+      char time[out_size - 1];
+      for (j = 0; j < 6; j++) {
+          time[j] = readbuff[j + 1];
+      }
+
+      for (j = 0; j < 6; j++) {
+        if (time[j] < '0' || time[j] > '9') {
+          send_data('E');
           return;
+        }
+      }
+
+      durations[0] = (time[0] - '0') * 10 + (time[1] - '0');
+      durations[1] = (time[2] - '0') * 10 + (time[3] - '0');
+      durations[2] = (time[4] - '0') * 10 + (time[5] - '0');
+      send_data('S');
+
+      if (mode == MODE_3) {
+        PORTB = LED_OFF;
+        return;
+      }
+    } else if ((msg >= '1' || msg <= '3') && controlMode == AUTO_MODE) {
+      int newMode = msg - '0';
+      if (newMode >= 1 && newMode <= 3 && mode != newMode) {
+        PORTB = LED_OFF;
+        mode = newMode;
+        send_data('0' + mode);
+        return;
       }
     }
 
-    // Check button
-    for (j = 0; j < 3; j++)
-      if (Button(&PORTB, j, 10, 0) && control_mode == 0) {
+    /* Button handler */
+    for (j = 0; j < 3; j++) {
+      if (Button(&PORTB, j, 10, 0) && controlMode == MANUAL_MODE) {
         while (Button(&PORTB, j, 10, 0))
           ;
-        if (switch_mode(j + 1))
-          return;
+        PORTB = LED_OFF;
+        mode = j + 1;
+        send_data('0' + mode);
+        return;
       }
+    }
 
     Delay_ms(100);
   }
+}
+
+void loop() {
+  if (mode == MODE_1) {
+    PORTB = LED_RED;
+    send_data('R');
+    delay(durations[0]);
+  } else if (mode == MODE_2 || (mode == MODE_3 && is_night_mode)) {
+    PORTB ^= LED_YELLOW;
+    send_data((PORTB & LED_YELLOW) ? 'Y' : 'O');
+    delay(durations[3]);
+  } else if (mode == MODE_3) {
+    if ((PORTB & 0x38) == LED_RED) {
+      PORTB = LED_YELLOW;
+      send_data('Y');
+      delay(durations[1]);
+    } else if ((PORTB & 0x38) == LED_YELLOW) {
+      PORTB = LED_GREEN;
+      send_data('G');
+      delay(durations[2]);
+    } else {
+      PORTB = LED_RED;
+      send_data('R');
+      delay(durations[0]);
+    }
+  } else {
+    PORTB = LED_OFF;
+  }
+}
+
+int main() {
+  setup();
+  while (true) {
+    loop();
+  }
+
+  return 0;
 }

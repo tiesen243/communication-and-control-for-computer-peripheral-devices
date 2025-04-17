@@ -60,10 +60,13 @@
             this.label_red = new System.Windows.Forms.Label();
             this.label_title = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
+            this.richTextBox_log = new System.Windows.Forms.RichTextBox();
+            this.groubBox_logs = new System.Windows.Forms.GroupBox();
             this.groupBox_connection.SuspendLayout();
             this.groupBox_information.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_led_status)).BeginInit();
             this.Controller.SuspendLayout();
+            this.groubBox_logs.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox_connection
@@ -414,11 +417,35 @@
             // 
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
+            // richTextBox_log
+            // 
+            this.richTextBox_log.Font = new System.Drawing.Font("GeistMono NF", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox_log.Location = new System.Drawing.Point(15, 27);
+            this.richTextBox_log.Margin = new System.Windows.Forms.Padding(12, 3, 3, 12);
+            this.richTextBox_log.Name = "richTextBox_log";
+            this.richTextBox_log.ReadOnly = true;
+            this.richTextBox_log.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.richTextBox_log.Size = new System.Drawing.Size(427, 100);
+            this.richTextBox_log.TabIndex = 10;
+            this.richTextBox_log.Text = "";
+            // 
+            // groubBox_logs
+            // 
+            this.groubBox_logs.Controls.Add(this.richTextBox_log);
+            this.groubBox_logs.Font = new System.Drawing.Font("Geist", 12F);
+            this.groubBox_logs.Location = new System.Drawing.Point(14, 629);
+            this.groubBox_logs.Name = "groubBox_logs";
+            this.groubBox_logs.Size = new System.Drawing.Size(457, 140);
+            this.groubBox_logs.TabIndex = 3;
+            this.groubBox_logs.TabStop = false;
+            this.groubBox_logs.Text = "Logs";
+            // 
             // Software
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 635);
+            this.ClientSize = new System.Drawing.Size(484, 781);
+            this.Controls.Add(this.groubBox_logs);
             this.Controls.Add(this.groupBox_information);
             this.Controls.Add(this.Controller);
             this.Controls.Add(this.label_title);
@@ -440,6 +467,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_led_status)).EndInit();
             this.Controller.ResumeLayout(false);
             this.Controller.PerformLayout();
+            this.groubBox_logs.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -477,5 +505,7 @@
         private System.Windows.Forms.Label label_IP;
         private System.Windows.Forms.Label label_name;
         private System.Windows.Forms.Label label_id;
+        private System.Windows.Forms.RichTextBox richTextBox_log;
+        private System.Windows.Forms.GroupBox groubBox_logs;
     }
 }
